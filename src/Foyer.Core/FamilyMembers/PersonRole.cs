@@ -1,5 +1,8 @@
 ﻿namespace Foyer.FamilyMembers
 {
+    /// <summary>
+    /// Person role in relationship.
+    /// </summary>
     public enum PersonRole : byte
     {
         Father = 1,

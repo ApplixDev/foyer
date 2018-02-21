@@ -189,9 +189,11 @@
     <Compile Include="Families\Family.cs" />
     <Compile Include="Families\FamilyManager.cs" />
     <Compile Include="Families\IFamilyManager.cs" />
-    <Compile Include="FamilyRelationships\FamilyMembersRelationship.cs" />
-    <Compile Include="FamilyRelationships\PersonRole.cs" />
-    <Compile Include="FamilyRelationships\RelationshipType.cs" />
+    <Compile Include="FamilyMembers\FamilyMembersManager.cs" />
+    <Compile Include="FamilyMembers\FamilyMembersRelationship.cs" />
+    <Compile Include="FamilyMembers\IFamilyMembersManager.cs" />
+    <Compile Include="FamilyMembers\PersonRole.cs" />
+    <Compile Include="FamilyMembers\RelationshipType.cs" />
     <Compile Include="FoyerConsts.cs" />
     <Compile Include="FoyerCoreModule.cs" />
     <Compile Include="AppVersionHelper.cs" />
