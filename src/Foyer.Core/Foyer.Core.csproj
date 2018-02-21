@@ -190,7 +190,7 @@
     <Compile Include="Families\FamilyManager.cs" />
     <Compile Include="Families\IFamilyManager.cs" />
     <Compile Include="FamilyRelationships\FamilyMembersRelationship.cs" />
-    <Compile Include="FamilyRelationships\RelationshipRole.cs" />
+    <Compile Include="FamilyRelationships\PersonRole.cs" />
     <Compile Include="FamilyRelationships\RelationshipType.cs" />
     <Compile Include="FoyerConsts.cs" />
     <Compile Include="FoyerCoreModule.cs" />

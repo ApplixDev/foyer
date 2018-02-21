@@ -1,15 +1,18 @@
 ﻿using System.Data.Common;
+using System.Data.Entity;
 using Abp.Zero.EntityFramework;
 using Foyer.Authorization.Roles;
 using Foyer.Authorization.Users;
+using Foyer.Families;
+using Foyer.People;
+using Foyer.FamilyMembers;
 using Foyer.MultiTenancy;
 
 namespace Foyer.EntityFramework
 {
     public class FoyerDbContext : AbpZeroDbContext<Tenant, Role, User>
     {
-        //TODO: Define an IDbSet for your Entities...
-
+        #region ctors
         /* NOTE: 
          *   Setting "Default" to base class helps us when working migration commands on Package Manager Console.
          *   But it may cause problems when working Migrate.exe of EF. If you will apply migrations on command line, do not
@@ -42,6 +45,18 @@ namespace Foyer.EntityFramework
          : base(existingConnection, contextOwnsConnection)
         {
 
+        }
+        #endregion
+
+        public virtual IDbSet<Person> People { get; set; }
+        public virtual IDbSet<Family> Families { get; set; }
+        public virtual IDbSet<FamilyMembersRelationship> FamilyMembersRelationships { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Configurations.Add(new FamilyMembersRelationshipConfiguration());
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Abp.Domain.Entities;
 using Foyer.Families;
-using Foyer.FamilyRelationships;
+using Foyer.FamilyMembers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

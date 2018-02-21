@@ -1,7 +1,7 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Timing;
 using Foyer.People;
-using Foyer.FamilyRelationships;
+using Foyer.FamilyMembers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

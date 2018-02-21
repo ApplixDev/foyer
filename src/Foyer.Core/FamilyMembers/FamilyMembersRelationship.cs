@@ -4,7 +4,7 @@ using Foyer.People;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Foyer.FamilyRelationships
+namespace Foyer.FamilyMembers
 {
     /// <summary>
     /// Represents the relationship between two people whithin a single family.
@@ -16,6 +16,7 @@ namespace Foyer.FamilyRelationships
         /// <summary>
         /// Family concerned by the relationship.
         /// </summary>
+        [Required]
         [ForeignKey(nameof(FamilyId))]
         public virtual Family Family { get; set; }
         public virtual int FamilyId { get; set; }
@@ -23,14 +24,12 @@ namespace Foyer.FamilyRelationships
         /// <summary>
         /// First person concerned by the relationship.
         /// </summary>
-        //[ForeignKey(nameof(PersonId))]
         public virtual Person Person { get; set; }
         public virtual int PersonId { get; set; }
 
         /// <summary>
         /// Second person concerned by the relationship.
         /// </summary>
-        //[ForeignKey(nameof(RelatedPersonId))]
         public virtual Person RelatedPerson { get; set; }
         public virtual int RelatedPersonId { get; set; }
 
@@ -42,12 +41,12 @@ namespace Foyer.FamilyRelationships
         /// <summary>
         /// First person role in the relationship.
         /// </summary>
-        public virtual RelationshipRole PersonRole { get; set; }
+        public virtual PersonRole PersonRole { get; set; }
 
         /// <summary>
         /// Second person role in the relationship.
         /// </summary>
-        public virtual RelationshipRole RelatedPersonRole { get; set; }
+        public virtual PersonRole RelatedPersonRole { get; set; }
 
         /// <summary>
         /// Other details about the relationship.

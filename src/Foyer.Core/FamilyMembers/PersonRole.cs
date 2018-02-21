@@ -1,6 +1,6 @@
-﻿namespace Foyer.FamilyRelationships
+﻿namespace Foyer.FamilyMembers
 {
-    public enum RelationshipRole : byte
+    public enum PersonRole : byte
     {
         Father = 1,
         Mother = 2,
