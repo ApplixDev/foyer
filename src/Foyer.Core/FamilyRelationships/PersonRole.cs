@@ -1,4 +1,4 @@
-﻿namespace Foyer.FamilyMembers
+﻿namespace Foyer.FamilyRelationships
 {
     /// <summary>
     /// Person role in relationship.

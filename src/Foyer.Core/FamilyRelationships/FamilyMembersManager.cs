@@ -3,7 +3,7 @@ using Foyer.Families;
 using Foyer.People;
 using System;
 
-namespace Foyer.FamilyMembers
+namespace Foyer.FamilyRelationships
 {
     public class FamilyMembersManager : DomainService, IFamilyMembersManager
     {
@@ -23,7 +23,7 @@ namespace Foyer.FamilyMembers
 
             if (family != null && person != null)
             {
-                var relationship = new FamilyMembersRelationship
+                var relationship = new FamilyRelationship
                 {
                    Family = family,
                    Person = person,
@@ -42,7 +42,7 @@ namespace Foyer.FamilyMembers
         }
 
         // Should be deleted ? because of it should be a stateless domain service methode.
-        public void AddFamilyMembersRelationship(FamilyMembersRelationship relationship)
+        public void AddFamilyMembersRelationship(FamilyRelationship relationship)
         {
             throw new NotImplementedException();
         }

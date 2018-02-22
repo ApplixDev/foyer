@@ -1,4 +1,4 @@
-using Foyer.FamilyMembers;
+using Foyer.FamilyRelationships;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.ModelConfiguration;
@@ -8,17 +8,21 @@ using System.Threading.Tasks;
 
 namespace Foyer.EntityFramework
 {
-    class FamilyMembersRelationshipConfiguration : EntityTypeConfiguration<FamilyMembersRelationship>
+    class FamilyRelationshipConfiguration : EntityTypeConfiguration<FamilyRelationship>
     {
-        public FamilyMembersRelationshipConfiguration()
+        public FamilyRelationshipConfiguration()
         {
+            this.HasRequired(r => r.Family)
+                .WithMany(f => f.FamilyRelationships)
+                .HasForeignKey(r => r.FamilyId);
+
             this.HasRequired(r => r.Person)
-                .WithMany(p => p.RelationshipsAsFirstMember)
+                .WithMany(p => p.RelationshipsAsPrincipalPerson)
                 .HasForeignKey(r => r.PersonId)
                 .WillCascadeOnDelete(false);
 
             this.HasRequired(r => r.RelatedPerson)
-                .WithMany(p => p.RelationshipsAsSecondMember)
+                .WithMany(p => p.RelationshipsAsRelatedPerson)
                 .HasForeignKey(r => r.RelatedPersonId)
                 .WillCascadeOnDelete(false);
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Foyer.FamilyMembers
+namespace Foyer.FamilyRelationships
 {
     public enum RelationshipType : byte
     {

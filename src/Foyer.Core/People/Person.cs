@@ -1,6 +1,5 @@
 ﻿using Abp.Domain.Entities;
-using Foyer.Families;
-using Foyer.FamilyMembers;
+using Foyer.FamilyRelationships;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -54,13 +53,13 @@ namespace Foyer.People
         public virtual bool IsDeleted { get; set; }
 
         /// <summary>
-        /// Family members relationships.
+        /// Represents the family relationships that this person has with people.
         /// </summary>
-        public virtual ICollection<FamilyMembersRelationship> RelationshipsAsFirstMember { get; set; } = new HashSet<FamilyMembersRelationship>();
+        public virtual ICollection<FamilyRelationship> RelationshipsAsPrincipalPerson { get; set; } = new HashSet<FamilyRelationship>();
 
         /// <summary>
-        /// Family members relationships.
+        /// Represents the family relationships where this person was related to people.
         /// </summary>
-        public virtual ICollection<FamilyMembersRelationship> RelationshipsAsSecondMember { get; set; } = new HashSet<FamilyMembersRelationship>();
+        public virtual ICollection<FamilyRelationship> RelationshipsAsRelatedPerson { get; set; } = new HashSet<FamilyRelationship>();
     }
 }

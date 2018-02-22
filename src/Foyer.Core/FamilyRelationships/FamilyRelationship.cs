@@ -4,20 +4,18 @@ using Foyer.People;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Foyer.FamilyMembers
+namespace Foyer.FamilyRelationships
 {
     /// <summary>
-    /// Represents the relationship between two people whithin a single family.
+    /// Represents the relationship between two members (persons) of a family.
     /// </summary>
-    public class FamilyMembersRelationship : Entity, ISoftDelete
+    public class FamilyRelationship : Entity, ISoftDelete
     {
         public const int MaxDetailsLength = 64 * 1024; //64KB
 
         /// <summary>
         /// Family concerned by the relationship.
         /// </summary>
-        [Required]
-        [ForeignKey(nameof(FamilyId))]
         public virtual Family Family { get; set; }
         public virtual int FamilyId { get; set; }
 

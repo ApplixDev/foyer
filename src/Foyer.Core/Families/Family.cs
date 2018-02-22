@@ -1,7 +1,6 @@
 ﻿using Abp.Domain.Entities;
-using Abp.Timing;
 using Foyer.People;
-using Foyer.FamilyMembers;
+using Foyer.FamilyRelationships;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,10 +16,9 @@ namespace Foyer.Families
         /// <summary>
         /// Head of family.
         /// </summary>
-        [Required]
         [ForeignKey(nameof(HeadOfFamilyId))]
         public virtual Person HeadOfFamily { get; set; }
-        public virtual int HeadOfFamilyId { get; set; }
+        public virtual int? HeadOfFamilyId { get; set; }
 
         /// <summary>
         /// Family name.
@@ -57,6 +55,6 @@ namespace Foyer.Families
         /// <summary>
         /// Family members relationships.
         /// </summary>
-        public virtual ICollection<FamilyMembersRelationship> FamilyMembersRelationships { get; set; } = new HashSet<FamilyMembersRelationship>();
+        public virtual ICollection<FamilyRelationship> FamilyRelationships { get; set; } = new HashSet<FamilyRelationship>();
     }
 }

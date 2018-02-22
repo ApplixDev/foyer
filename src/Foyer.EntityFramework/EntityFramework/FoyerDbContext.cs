@@ -5,7 +5,7 @@ using Foyer.Authorization.Roles;
 using Foyer.Authorization.Users;
 using Foyer.Families;
 using Foyer.People;
-using Foyer.FamilyMembers;
+using Foyer.FamilyRelationships;
 using Foyer.MultiTenancy;
 
 namespace Foyer.EntityFramework
@@ -50,11 +50,11 @@ namespace Foyer.EntityFramework
 
         public virtual IDbSet<Person> People { get; set; }
         public virtual IDbSet<Family> Families { get; set; }
-        public virtual IDbSet<FamilyMembersRelationship> FamilyMembersRelationships { get; set; }
+        public virtual IDbSet<FamilyRelationship> FamilyRelationships { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Configurations.Add(new FamilyMembersRelationshipConfiguration());
+            modelBuilder.Configurations.Add(new FamilyRelationshipConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
