@@ -5,7 +5,7 @@ using Shouldly;
 
 namespace Foyer.Tests.Families
 {
-    class FamilyManager_Tests : FoyerTestBase
+    public class FamilyManager_Tests : FoyerTestBase
     {
         private readonly IFamilyManager _familyManager;
 
