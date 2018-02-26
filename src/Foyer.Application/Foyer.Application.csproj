@@ -211,6 +211,13 @@
     <Compile Include="MultiTenancy\Dto\TenantDto.cs" />
     <Compile Include="MultiTenancy\ITenantAppService.cs" />
     <Compile Include="MultiTenancy\TenantAppService.cs" />
+    <Compile Include="People\Dto\DeletePersonInput.cs" />
+    <Compile Include="People\Dto\CreatePersonInput.cs" />
+    <Compile Include="People\Dto\GetPersonOutput.cs" />
+    <Compile Include="People\Dto\GetPersonInput.cs" />
+    <Compile Include="People\IPersonAppService.cs" />
+    <Compile Include="People\PersonAppService.cs" />
+    <Compile Include="People\Dto\UpdatePersonInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roles\Dto\CreateRoleDto.cs" />
     <Compile Include="Roles\Dto\PermissionDto.cs" />
