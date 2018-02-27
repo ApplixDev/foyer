@@ -1,24 +1,26 @@
-﻿using System;
+﻿using Abp.Application.Services.Dto;
+using Abp.Authorization.Users;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Foyer.People.Dto
 {
-    public class UpdatePersonInput
+    public class UpdatePersonInput : EntityDto
     {
-        [Range(1, int.MaxValue)]
-        public int PersonId { get; set; }
-
-        [StringLength(Person.MaxNameLength)]
+        [Required]
+        [StringLength(AbpUserBase.MaxNameLength)]
         public string FirstName { get; set; }
 
-        [StringLength(Person.MaxNameLength)]
+        [Required]
+        [StringLength(AbpUserBase.MaxNameLength)]
         public string LastName { get; set; }
 
-        public Gender? Gender { get; set; }
+        [Required]
+        public Gender Gender { get; set; }
 
-        public DateTime? DateOfBirth { get; set; }
+        public DateTime? BirthDate { get; set; }
 
-        public DateTime? PlaceOfBirth { get; set; }
+        public DateTime? BirthPlace { get; set; }
 
         [StringLength(Person.MaxDetailsLength)]
         public string OtherDetails { get; set; }

@@ -8,6 +8,7 @@ namespace Foyer.People
     public interface IPersonAppService : IApplicationService
     {
         IEnumerable<GetPersonOutput> ListAll();
+        void CreatePerson(CreatePersonInput input);
         Task CreatePersonAsync(CreatePersonInput input);
         void UpdatePerson(UpdatePersonInput input);
         void DeletePerson(DeletePersonInput input);

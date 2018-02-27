@@ -227,6 +227,10 @@
     <Compile Include="Migrations\201802221538406_Update Family Entity.Designer.cs">
       <DependentUpon>201802221538406_Update Family Entity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802271443138_Updated Person Entity.cs" />
+    <Compile Include="Migrations\201802271443138_Updated Person Entity.Designer.cs">
+      <DependentUpon>201802271443138_Updated Person Entity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AbpZeroDbMigrator.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="FoyerDataModule.cs" />
@@ -234,6 +238,7 @@
     <Compile Include="Migrations\SeedData\DefaultLanguagesCreator.cs" />
     <Compile Include="Migrations\SeedData\DefaultSettingsCreator.cs" />
     <Compile Include="Migrations\SeedData\DefaultTenantCreator.cs" />
+    <Compile Include="Migrations\SeedData\FamiliesAndPeopleCreator.cs" />
     <Compile Include="Migrations\SeedData\HostRoleAndUserCreator.cs" />
     <Compile Include="Migrations\SeedData\InitialHostDbBuilder.cs" />
     <Compile Include="Migrations\SeedData\TenantRoleAndUserBuilder.cs" />
@@ -264,6 +269,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802221538406_Update Family Entity.resx">
       <DependentUpon>201802221538406_Update Family Entity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802271443138_Updated Person Entity.resx">
+      <DependentUpon>201802271443138_Updated Person Entity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

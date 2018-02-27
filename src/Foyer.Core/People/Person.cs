@@ -34,12 +34,12 @@ namespace Foyer.People
         /// <summary>
         /// Date of birth.
         /// </summary>
-        public virtual DateTime? DateOfBirth { get; set; }
+        public virtual DateTime? BirthDate { get; set; }
 
         /// <summary>
         /// Place of birth.
         /// </summary>
-        public virtual DateTime? PlaceOfBirth { get; set; }
+        public virtual DateTime? BirthPlace { get; set; }
 
         /// <summary>
         /// Other individual details.

@@ -23,22 +23,22 @@ namespace Foyer.People
 
         public void CreatePerson(CreatePersonInput input)
         {
-            var person = CheckAndMapInputToPerson(input);
+            var person = MapInputToPersonIfNotExists(input);
             _personRepository.Insert(person);
         }
 
         public async Task CreatePersonAsync(CreatePersonInput input)
         {
-            var person = CheckAndMapInputToPerson(input);
+            var person = MapInputToPersonIfNotExists(input);
             await _personRepository.InsertAsync(person);
         }
 
-        private Person CheckAndMapInputToPerson(CreatePersonInput input)
+        private Person MapInputToPersonIfNotExists(CreatePersonInput input)
         {
             var person = _personRepository.FirstOrDefault(
                             p => p.FirstName == input.FirstName &&
                             p.LastName == input.LastName &&
-                            p.DateOfBirth == input.DateOfBirth);
+                            p.BirthDate == input.BirthDate);
 
             if (person != null)
             {
@@ -48,14 +48,20 @@ namespace Foyer.People
             return _objectMapper.Map<Person>(input);
         }
 
+        public void UpdatePerson(UpdatePersonInput input)
+        {
+            Person person = _personRepository.Get(input.Id);
+            _objectMapper.Map(input, person);
+        }
+
         public void DeletePerson(DeletePersonInput input)
         {
-            _personRepository.Delete(input.PersonId);
+            _personRepository.Delete(input.Id);
         }
 
         public GetPersonOutput GetPersonById(GetPersonInput input)
         {
-            var person = _personRepository.Get(input.PersonId);
+            var person = _personRepository.Get(input.Id);
             return _objectMapper.Map<GetPersonOutput>(person);
         }
 
@@ -63,12 +69,6 @@ namespace Foyer.People
         {
             var people = _personRepository.GetAllList().ToList();
             return _objectMapper.Map<List<GetPersonOutput>>(people);
-        }
-
-        public void UpdatePerson(UpdatePersonInput input)
-        {
-            Person person = _objectMapper.Map<Person>(input);
-            _personRepository.Update(person);
         }
     }
 }
