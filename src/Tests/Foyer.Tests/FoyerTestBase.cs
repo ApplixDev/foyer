@@ -33,6 +33,7 @@ namespace Foyer.Tests
             {
                 new InitialHostDbBuilder(context).Create();
                 new DefaultTenantCreator(context).Create();
+                new FamiliesAndPeopleCreator(context).Create();
             });
 
             //Seed initial data for default tenant

@@ -231,6 +231,18 @@
     <Compile Include="Migrations\201802271443138_Updated Person Entity.Designer.cs">
       <DependentUpon>201802271443138_Updated Person Entity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802281403059_Update Person BirthPlace Entity Property.cs" />
+    <Compile Include="Migrations\201802281403059_Update Person BirthPlace Entity Property.Designer.cs">
+      <DependentUpon>201802281403059_Update Person BirthPlace Entity Property.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802281411044_Remove Family EntryDate Entity Property.cs" />
+    <Compile Include="Migrations\201802281411044_Remove Family EntryDate Entity Property.Designer.cs">
+      <DependentUpon>201802281411044_Remove Family EntryDate Entity Property.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802281413064_Make HeadOfFamily Required.cs" />
+    <Compile Include="Migrations\201802281413064_Make HeadOfFamily Required.Designer.cs">
+      <DependentUpon>201802281413064_Make HeadOfFamily Required.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AbpZeroDbMigrator.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="FoyerDataModule.cs" />
@@ -272,6 +284,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802271443138_Updated Person Entity.resx">
       <DependentUpon>201802271443138_Updated Person Entity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802281403059_Update Person BirthPlace Entity Property.resx">
+      <DependentUpon>201802281403059_Update Person BirthPlace Entity Property.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802281411044_Remove Family EntryDate Entity Property.resx">
+      <DependentUpon>201802281411044_Remove Family EntryDate Entity Property.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802281413064_Make HeadOfFamily Required.resx">
+      <DependentUpon>201802281413064_Make HeadOfFamily Required.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

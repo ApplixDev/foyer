@@ -253,7 +253,8 @@
     <Compile Include="Sessions\SessionAppService_Tests.cs" />
     <Compile Include="FoyerTestBase.cs" />
     <Compile Include="Users\UserAppService_Tests.cs" />
-    <Compile Include="UtilityTest.cs" />
+    <Compile Include="Utilities\Utilities.cs" />
+    <Compile Include="Utilities\Utility_Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -6,14 +6,15 @@ using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Foyer.Tests
+namespace Foyer.Tests.Utilities
 {
-    public class UtilityTest
+    public class Utility_Tests
     {
         private Dictionary<string, string> ProjectsAssembliesPath = new Dictionary<string, string>();
         private ITestOutputHelper _output;
 
-        public UtilityTest(ITestOutputHelper output) {
+        public Utility_Tests(ITestOutputHelper output)
+        {
             _output = output;
 
             ProjectsAssembliesPath.Add("Test", @"C:\projects\Foyer\3.2.0\src\Tests\Foyer.Tests\bin\Debug");
