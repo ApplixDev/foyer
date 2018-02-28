@@ -21,7 +21,8 @@ namespace Foyer.People.Dto
 
         public DateTime? BirthDate { get; set; }
 
-        public DateTime? BirthPlace { get; set; }
+        [StringLength(Person.MaxBirthPlaceNameLength)]
+        public string BirthPlace { get; set; }
 
         [StringLength(Person.MaxDetailsLength)]
         public string OtherDetails { get; set; }

@@ -1,4 +1,5 @@
-﻿using Abp.Domain.Entities;
+﻿using Abp.Authorization.Users;
+using Abp.Domain.Entities;
 using Foyer.FamilyRelationships;
 using System;
 using System.Collections.Generic;
@@ -9,20 +10,20 @@ namespace Foyer.People
     public class Person : Entity, ISoftDelete
     {
         public const int MaxDetailsLength = 64 * 1024; //64KB
-        public const int MaxNameLength = 32;
+        public const int MaxBirthPlaceNameLength = 328;
 
         /// <summary>
         /// First name.
         /// </summary>
         [Required]
-        [StringLength(MaxNameLength)]
+        [StringLength(AbpUserBase.MaxNameLength)]
         public virtual string FirstName { get; set; }
 
         /// <summary>
         /// Last name.
         /// </summary>
         [Required]
-        [StringLength(MaxNameLength)]
+        [StringLength(AbpUserBase.MaxNameLength)]
         public virtual string LastName { get; set; }
 
         /// <summary>
@@ -39,7 +40,8 @@ namespace Foyer.People
         /// <summary>
         /// Place of birth.
         /// </summary>
-        public virtual DateTime? BirthPlace { get; set; }
+        [StringLength(MaxBirthPlaceNameLength)]
+        public virtual string BirthPlace { get; set; }
 
         /// <summary>
         /// Other individual details.

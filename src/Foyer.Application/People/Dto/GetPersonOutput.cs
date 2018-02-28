@@ -16,7 +16,7 @@ namespace Foyer.People.Dto
 
         public DateTime? BirthDate { get; set; }
 
-        public DateTime? BirthPlace { get; set; }
+        public string BirthPlace { get; set; }
 
         public string OtherDetails { get; set; }
     }

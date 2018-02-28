@@ -16,6 +16,7 @@ namespace Foyer.Families
         /// <summary>
         /// Head of family.
         /// </summary>
+        [Required]
         [ForeignKey(nameof(HeadOfFamilyId))]
         public virtual Person HeadOfFamily { get; set; }
         public virtual int? HeadOfFamilyId { get; set; }
@@ -41,11 +42,6 @@ namespace Foyer.Families
         /// Separation date.
         /// </summary>
         public virtual DateTime? DivorceDate { get; set; }
-
-        /// <summary>
-        /// Date of entry.
-        /// </summary>
-        public virtual DateTime? EntryDate { get; set; }
 
         /// <summary>
         /// Used to mark family as deleted.
