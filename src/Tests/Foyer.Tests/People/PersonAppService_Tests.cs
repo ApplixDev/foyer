@@ -1,13 +1,14 @@
-﻿using Abp.Runtime.Validation;
+﻿using Abp.Authorization.Users;
+using Abp.Runtime.Validation;
 using Abp.UI;
 using Foyer.People;
 using Foyer.People.Dto;
-using Shouldly;
+using Foyer.Tests.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shouldly;
 using Xunit;
 
 namespace Foyer.Tests.People
@@ -63,7 +64,6 @@ namespace Foyer.Tests.People
                 Gender = Gender.Male,
                 BirthDate = new DateTime(1992, 6, 15)
             };
-
             Should.Throw<UserFriendlyException>(() => _personAppService.CreatePerson(salah))
                 .Message.ShouldBe("This Person already exist");
 
@@ -71,11 +71,11 @@ namespace Foyer.Tests.People
         }
 
         [Fact]
-        public void Should_Not_Create_New_Person_If_Not_Full_Informations_Are_Provided()
+        public void Should_Not_Create_New_Person_If_FirstName_Is_Null()
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            var personWithoutFirstName = new CreatePersonInput()
+            var personWithNullFirstName = new CreatePersonInput()
             {
                 LastName = "Doe",
                 Gender = Gender.Male,
@@ -83,9 +83,38 @@ namespace Foyer.Tests.People
                 BirthPlace = "USA",
                 OtherDetails = "We don't know the first name of this person"
             };
-            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithoutFirstName));
+            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithNullFirstName));
 
-            var personWithoutLastName = new CreatePersonInput()
+            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+        }
+
+        [Fact]
+        public void Should_Not_Create_New_Person_If_FirstName_Length_Is_Oversize()
+        {
+            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+
+            var OversizedFirstName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
+
+            var personWithOversizeFirstNameLength = new CreatePersonInput()
+            {
+                FirstName = OversizedFirstName,
+                LastName = "Doe",
+                Gender = Gender.Male,
+                BirthDate = new DateTime(1992, 6, 15),
+                BirthPlace = "USA",
+                OtherDetails = "We don't know the first name of this person"
+            };
+            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithOversizeFirstNameLength));
+
+            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+        }
+
+        [Fact]
+        public void Should_Not_Create_New_Person_If_LastName_Is_Null()
+        {
+            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+
+            var personWithNullLastName = new CreatePersonInput()
             {
                 FirstName = "John",
                 Gender = Gender.Male,
@@ -93,9 +122,38 @@ namespace Foyer.Tests.People
                 BirthPlace = "USA",
                 OtherDetails = "We don't know the last name of this person"
             };
-            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithoutLastName));
+            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithNullLastName));
 
-            var personWithoutGender = new CreatePersonInput()
+            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+        }
+
+        [Fact]
+        public void Should_Not_Create_New_Person_If_LastName_Length_Is_Oversize()
+        {
+            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+
+            var OversizedLastName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
+
+            var personWithOversizeLastNameLength = new CreatePersonInput()
+            {
+                FirstName = "John",
+                LastName = OversizedLastName,
+                Gender = Gender.Male,
+                BirthDate = new DateTime(1992, 6, 15),
+                BirthPlace = "USA",
+                OtherDetails = "We don't know the last name of this person"
+            };
+            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithOversizeLastNameLength));
+
+            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+        }
+
+        [Fact]
+        public void Should_Not_Create_New_Person_If_Gender_Is_Invalid()
+        {
+            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+
+            var personWithInvalidGenderValue = new CreatePersonInput()
             {
                 FirstName = "John",
                 LastName = "Doe",
@@ -103,14 +161,16 @@ namespace Foyer.Tests.People
                 BirthPlace = "USA",
                 OtherDetails = "We don't know the gender of this person"
             };
-            personWithoutGender.Gender.ShouldBe(default(Gender));// Default value should be 0.
-            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithoutGender));
+            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithInvalidGenderValue));
+
+            personWithInvalidGenderValue.Gender = (Gender)3; //Value can only be Female = 1 or Male = 2.
+            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithInvalidGenderValue));
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
         }
 
         [Fact]
-        public void Should_Not_Create_Person_With_Oversized_StringLength()
+        public void Should_Not_Create_Person_With_Oversized_Properties_Length()
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 

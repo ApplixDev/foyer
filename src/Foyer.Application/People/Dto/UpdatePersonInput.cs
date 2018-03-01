@@ -15,7 +15,7 @@ namespace Foyer.People.Dto
         [StringLength(AbpUserBase.MaxNameLength)]
         public string LastName { get; set; }
 
-        [Required]
+        [EnumDataType(typeof(Gender))]
         public Gender Gender { get; set; }
 
         public DateTime? BirthDate { get; set; }

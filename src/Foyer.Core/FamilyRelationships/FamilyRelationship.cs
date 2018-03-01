@@ -34,16 +34,19 @@ namespace Foyer.FamilyRelationships
         /// <summary>
         /// Relationship type.
         /// </summary>
+        [EnumDataType(typeof(RelationshipType))]
         public virtual RelationshipType RelationshipType { get; set; }
 
         /// <summary>
         /// First person role in the relationship.
         /// </summary>
+        [EnumDataType(typeof(PersonRole))]
         public virtual PersonRole PersonRole { get; set; }
 
         /// <summary>
         /// Second person role in the relationship.
         /// </summary>
+        [EnumDataType(typeof(PersonRole))]
         public virtual PersonRole RelatedPersonRole { get; set; }
 
         /// <summary>

@@ -1,6 +1,4 @@
-﻿using Abp.Application.Services.Dto;
-using Abp.AutoMapper;
-using System;
+﻿using System;
 
 namespace Foyer.People.Dto
 {

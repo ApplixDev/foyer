@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Foyer.Tests.Utilities
 {
-    internal static class Utilities
+    internal static class Strings
     {
         private static readonly Random Random = new Random();
 

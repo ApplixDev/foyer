@@ -29,7 +29,7 @@ namespace Foyer.People
         /// <summary>
         /// Male or female.
         /// </summary>
-        [Required]
+        [EnumDataType(typeof(Gender))]
         public virtual Gender Gender { get; set; }
 
         /// <summary>
