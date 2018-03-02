@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Foyer.People.Dto
 {
-    [AutoMapFrom(typeof(Person)] //Map PersonDto from Person
+    [AutoMapFrom(typeof(Person))] //Map PersonDto from Person
     public class PersonDto : EntityDto
     {
         public string FirstName { get; set; }

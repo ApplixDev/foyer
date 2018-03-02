@@ -1,12 +1,17 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Authorization.Users;
+using Abp.AutoMapper;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Foyer.People.Dto
 {
-    public class UpdatePersonInput : EntityDto
+    [AutoMapTo(typeof(Person))]
+    public class UpdatePersonInput
     {
+        [Range(1, int.MaxValue)]
+        public int PersonId { get; set; }
+
         [Required]
         [StringLength(AbpUserBase.MaxNameLength)]
         public string FirstName { get; set; }
@@ -25,5 +30,7 @@ namespace Foyer.People.Dto
 
         [StringLength(Person.MaxDetailsLength)]
         public string OtherDetails { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

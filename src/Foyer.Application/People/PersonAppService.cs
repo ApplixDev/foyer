@@ -50,18 +50,18 @@ namespace Foyer.People
 
         public void Update(UpdatePersonInput input)
         {
-            Person person = _personRepository.Get(input.Id);
+            Person person = _personRepository.Get(input.PersonId);
             _objectMapper.Map(input, person);
         }
 
         public void Delete(DeletePersonInput input)
         {
-            _personRepository.Delete(input.Id);
+            _personRepository.Delete(input.PersonId);
         }
 
         public PersonDto Get(GetPersonInput input)
         {
-            var person = _personRepository.Get(input.Id);
+            var person = _personRepository.Get(input.PersonId);
             return _objectMapper.Map<PersonDto>(person);
         }
 

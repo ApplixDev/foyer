@@ -3,13 +3,9 @@ using Foyer.Families;
 using Foyer.FamilyRelationships;
 using Foyer.People;
 using System;
-using System.Collections.Generic;
-using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Foyer.Migrations.SeedData
+namespace Foyer.Tests.SeedData
 {
     public class FamiliesAndPeopleCreator
     {

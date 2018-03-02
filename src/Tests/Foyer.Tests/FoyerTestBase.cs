@@ -13,10 +13,10 @@ using Foyer.Authorization.Users;
 using Foyer.EntityFramework;
 using Foyer.Migrations.SeedData;
 using Foyer.MultiTenancy;
-using Foyer.Users;
 using Castle.MicroKernel.Registration;
 using Effort;
 using EntityFramework.DynamicFilters;
+using Foyer.Tests.SeedData;
 
 namespace Foyer.Tests
 {
