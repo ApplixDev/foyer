@@ -35,7 +35,7 @@ namespace Foyer.Tests.People
                 BirthDate = new DateTime(1996, 4, 9)
             };
 
-            _personAppService.CreatePerson(loCelso);
+            _personAppService.Create(loCelso);
 
             UsingDbContext(context =>
             {
@@ -64,7 +64,7 @@ namespace Foyer.Tests.People
                 Gender = Gender.Male,
                 BirthDate = new DateTime(1992, 6, 15)
             };
-            Should.Throw<UserFriendlyException>(() => _personAppService.CreatePerson(salah))
+            Should.Throw<UserFriendlyException>(() => _personAppService.Create(salah))
                 .Message.ShouldBe("This Person already exist");
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
@@ -83,7 +83,7 @@ namespace Foyer.Tests.People
                 BirthPlace = "USA",
                 OtherDetails = "We don't know the first name of this person"
             };
-            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithNullFirstName));
+            Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithNullFirstName));
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
         }
@@ -104,7 +104,7 @@ namespace Foyer.Tests.People
                 BirthPlace = "USA",
                 OtherDetails = "We don't know the first name of this person"
             };
-            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithOversizeFirstNameLength));
+            Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithOversizeFirstNameLength));
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
         }
@@ -122,7 +122,7 @@ namespace Foyer.Tests.People
                 BirthPlace = "USA",
                 OtherDetails = "We don't know the last name of this person"
             };
-            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithNullLastName));
+            Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithNullLastName));
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
         }
@@ -143,7 +143,7 @@ namespace Foyer.Tests.People
                 BirthPlace = "USA",
                 OtherDetails = "We don't know the last name of this person"
             };
-            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithOversizeLastNameLength));
+            Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithOversizeLastNameLength));
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
         }
@@ -161,26 +161,51 @@ namespace Foyer.Tests.People
                 BirthPlace = "USA",
                 OtherDetails = "We don't know the gender of this person"
             };
-            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithInvalidGenderValue));
+            Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithInvalidGenderValue));
 
             personWithInvalidGenderValue.Gender = (Gender)3; //Value can only be Female = 1 or Male = 2.
-            Should.Throw<AbpValidationException>(() => _personAppService.CreatePerson(personWithInvalidGenderValue));
+            Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithInvalidGenderValue));
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
         }
 
         [Fact]
-        public void Should_Not_Create_Person_With_Oversized_Properties_Length()
+        public void Should_Not_Create_Person_With_Oversized_Details_Length()
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            //var unknownPerson = new CreatePersonInput()
-            //{
-            //    BirthDate = new DateTime(1992, 6, 15),
-            //    OtherDetails = "Unknown person: we don't know the name of this person and his gender"
-            //};
+            var OversizedDetails = Strings.GenerateRandomString(Person.MaxDetailsLength + 1);
 
-            //Should.Throw<UserFriendlyException>(() => _personAppService.CreatePerson(unknownPerson));
+            var personWithOversizeDetailsLength = new CreatePersonInput()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Gender = Gender.Male,
+                BirthDate = new DateTime(1992, 6, 15),
+                BirthPlace = "USA",
+                OtherDetails = OversizedDetails
+            };
+            Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithOversizeDetailsLength));
+
+            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+        }
+
+        [Fact]
+        public void Should_Not_Create_Person_With_Oversized_BirthPlace_Length()
+        {
+            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+
+            var OversizedBirthPlace = Strings.GenerateRandomString(Person.MaxBirthPlaceNameLength + 1);
+
+            var personWithOversizeBirthPlaceLength = new CreatePersonInput()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Gender = Gender.Male,
+                BirthDate = new DateTime(1992, 6, 15),
+                BirthPlace = OversizedBirthPlace
+            };
+            Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithOversizeBirthPlaceLength));
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
         }

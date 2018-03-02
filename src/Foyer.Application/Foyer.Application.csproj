@@ -213,8 +213,9 @@
     <Compile Include="MultiTenancy\TenantAppService.cs" />
     <Compile Include="People\Dto\DeletePersonInput.cs" />
     <Compile Include="People\Dto\CreatePersonInput.cs" />
-    <Compile Include="People\Dto\GetPersonOutput.cs" />
     <Compile Include="People\Dto\GetPersonInput.cs" />
+    <Compile Include="People\Dto\GetAllPeopleOutput.cs" />
+    <Compile Include="People\Dto\PersonDto.cs" />
     <Compile Include="People\IPersonAppService.cs" />
     <Compile Include="People\PersonAppService.cs" />
     <Compile Include="People\Dto\UpdatePersonInput.cs" />

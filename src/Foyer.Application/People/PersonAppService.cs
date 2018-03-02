@@ -21,13 +21,13 @@ namespace Foyer.People
             _objectMapper = objectMapper;
         }
 
-        public void CreatePerson(CreatePersonInput input)
+        public void Create(CreatePersonInput input)
         {
             var person = MapInputToPersonIfNotExists(input);
             _personRepository.Insert(person);
         }
 
-        public async Task CreatePersonAsync(CreatePersonInput input)
+        public async Task CreateAsync(CreatePersonInput input)
         {
             var person = MapInputToPersonIfNotExists(input);
             await _personRepository.InsertAsync(person);
@@ -48,27 +48,30 @@ namespace Foyer.People
             return _objectMapper.Map<Person>(input);
         }
 
-        public void UpdatePerson(UpdatePersonInput input)
+        public void Update(UpdatePersonInput input)
         {
             Person person = _personRepository.Get(input.Id);
             _objectMapper.Map(input, person);
         }
 
-        public void DeletePerson(DeletePersonInput input)
+        public void Delete(DeletePersonInput input)
         {
             _personRepository.Delete(input.Id);
         }
 
-        public GetPersonOutput GetPersonById(GetPersonInput input)
+        public PersonDto Get(GetPersonInput input)
         {
             var person = _personRepository.Get(input.Id);
-            return _objectMapper.Map<GetPersonOutput>(person);
+            return _objectMapper.Map<PersonDto>(person);
         }
 
-        public IEnumerable<GetPersonOutput> ListAll()
+        public async Task<GetAllPeopleOutput> GetAllPeople()
         {
-            var people = _personRepository.GetAllList().ToList();
-            return _objectMapper.Map<List<GetPersonOutput>>(people);
+            var people = await _personRepository.GetAllListAsync();
+            return new GetAllPeopleOutput
+            {
+                People = _objectMapper.Map<List<PersonDto>>(people)
+            };
         }
     }
 }

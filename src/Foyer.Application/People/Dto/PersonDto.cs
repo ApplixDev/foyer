@@ -1,11 +1,16 @@
-﻿using System;
+﻿using Abp.Application.Services.Dto;
+using Abp.AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Foyer.People.Dto
 {
-    public class GetPersonOutput
+    [AutoMapFrom(typeof(Person)] //Map PersonDto from Person
+    public class PersonDto : EntityDto
     {
-        public int Id { get; set; }
-
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -17,5 +22,7 @@ namespace Foyer.People.Dto
         public string BirthPlace { get; set; }
 
         public string OtherDetails { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }
