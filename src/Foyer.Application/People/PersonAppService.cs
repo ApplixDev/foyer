@@ -56,6 +56,13 @@ namespace Foyer.People
 
         public void Delete(DeletePersonInput input)
         {
+            var person = _personRepository.FirstOrDefault(p => p.Id == input.PersonId);
+
+            if (person == null)
+            {
+                throw new UserFriendlyException("This Person does not exist");
+            }
+
             _personRepository.Delete(input.PersonId);
         }
 

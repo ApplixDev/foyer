@@ -3,6 +3,7 @@ using Foyer.Families;
 using Foyer.FamilyRelationships;
 using Foyer.People;
 using System;
+using System.Data.Entity.Migrations;
 using System.Linq;
 
 namespace Foyer.Tests.SeedData
@@ -34,6 +35,9 @@ namespace Foyer.Tests.SeedData
             var dembele = AddPersonIfNotExists("Ousmane", "Dembélé", Gender.Male, new DateTime(1997, 5, 15), "France");
             var dembeleWife = AddPersonIfNotExists("Madame", "Dembélé", Gender.Male, new DateTime(1997, 5, 15), "France");
 
+            //Add soft deleted person
+            var zidane = AddPersonIfNotExists("Zindine", "Zidane", Gender.Male, new DateTime(1972, 6, 23), "Marseille", true);
+
             //Add some families
             var salahFamily = AddFamilyIfNotExists(salah, salahWife, new DateTime(2012, 6, 15));
             var maneFamily = AddFamilyIfNotExists(mane, maneWife, new DateTime(2012, 4, 10));
@@ -49,7 +53,7 @@ namespace Foyer.Tests.SeedData
             AddMarriageRelationshipIfNotExists(dembeleFamily, dembele, dembeleWife);
         }
 
-        private Person AddPersonIfNotExists(string firstName, string lastName, Gender gender, DateTime birthDate, string birthPlace)
+        private Person AddPersonIfNotExists(string firstName, string lastName, Gender gender, DateTime birthDate, string birthPlace, bool isDeleted = false)
         {
             var person = _context.People.FirstOrDefault(p => p.FirstName == firstName && p.LastName == lastName && p.Gender == gender && p.BirthDate == birthDate);
 
@@ -61,7 +65,8 @@ namespace Foyer.Tests.SeedData
                     LastName = lastName,
                     Gender = gender,
                     BirthDate = birthDate,
-                    BirthPlace = birthPlace
+                    BirthPlace = birthPlace,
+                    IsDeleted = isDeleted
                 });
 
                 _context.SaveChanges();
@@ -108,11 +113,6 @@ namespace Foyer.Tests.SeedData
 
             _context.FamilyRelationships.Add(relationship);
             _context.SaveChanges();
-        }
-
-        private void GetPerson(string firstName, string lastName, Gender gender, DateTime birthDate, string birthPlace)
-        {
-
         }
     }
 }
