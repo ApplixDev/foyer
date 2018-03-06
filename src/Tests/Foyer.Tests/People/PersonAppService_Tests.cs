@@ -299,7 +299,7 @@ namespace Foyer.Tests.People
         {
             var newPerson = new UpdatePersonInput
             {
-                //PersonID = 0 by default
+                //PersonId = 0 by default
                 FirstName = "Lo",
                 LastName = "Celso",
                 Gender = Gender.Male,
@@ -447,16 +447,6 @@ namespace Foyer.Tests.People
 
             Should.Throw<AbpValidationException>(() => _personAppService.Update(personWithOversizedDetailsLength));
         }
-
-        private Person GetPerson(int personId)
-        {
-            return UsingDbContext(context => context.People.FirstOrDefault(p => p.Id == personId));
-        }
-
-        private Person GetPerson(string firstName, string lastName)
-        {
-            return UsingDbContext(context => context.People.Single(p => p.FirstName == firstName && p.LastName == lastName));
-        }
         #endregion
 
         #region Delete person tests
@@ -518,7 +508,7 @@ namespace Foyer.Tests.People
         {
             var input = new DeletePersonInput
             {
-                //PersonID = 0 by default
+                //PersonId = 0 by default
             };
 
             input.PersonId.ShouldNotBeInRange(1, int.MaxValue);
@@ -527,7 +517,44 @@ namespace Foyer.Tests.People
         #endregion
 
         #region Get person tests
+        [Fact]
+        public void Should_Return_Found_PersonDto()
+        {
+            var salah = GetPerson("Mohamed", "Salah");
 
+            var personDto = _personAppService.Get(new GetPersonInput { PersonId = salah.Id });
+
+            personDto.ShouldBeOfType<PersonDto>();
+            personDto.ShouldNotBeNull();
+            personDto.Id.ShouldBe(salah.Id);
+        }
+
+        [Fact]
+        public void Should_Throw_EntityNotFoundException_If_GetPersonInput_Id_Does_Not_Exist()
+        {
+            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var randomId = initialPeopleCount + 1;
+            var foundPerson = GetPerson(randomId);
+
+            randomId.ShouldBeInRange(1, int.MaxValue);
+            //So the test works correctly.
+            foundPerson.ShouldBeNull(@"We should not find a person with the random Id.
+                If foundPerson is not null, try change the randomId value with not existing Id.");
+
+            Should.Throw<EntityNotFoundException>(() => _personAppService.Get(new GetPersonInput { PersonId = randomId }));
+        }
+
+        [Fact]
+        public void Should_Throw_AbpValidationException_If_GetPersonInput_Id_Is_Out_Of_Range()
+        {
+            var input = new GetPersonInput
+            {
+                //PersonId = 0 by default
+            };
+
+            input.PersonId.ShouldNotBeInRange(1, int.MaxValue);
+            Should.Throw<AbpValidationException>(() => _personAppService.Get(input), "PersonId = 0 should be out of range");
+        }
         #endregion
 
         #region Get all people tests
@@ -537,6 +564,18 @@ namespace Foyer.Tests.People
             var output = await _personAppService.GetAllPeople();
 
             output.People.Count().ShouldBeGreaterThan(0);
+        }
+        #endregion
+
+        #region Private methodes
+        private Person GetPerson(int personId)
+        {
+            return UsingDbContext(context => context.People.FirstOrDefault(p => p.Id == personId));
+        }
+
+        private Person GetPerson(string firstName, string lastName)
+        {
+            return UsingDbContext(context => context.People.Single(p => p.FirstName == firstName && p.LastName == lastName));
         }
         #endregion
     }
