@@ -192,6 +192,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Families\Dto\PersonHeadOfFamilyInput.cs" />
+    <Compile Include="Families\Dto\CreateFamilyInput.cs" />
+    <Compile Include="Families\Dto\DeleteFamilyInput.cs" />
+    <Compile Include="Families\FamilyAppService.cs" />
+    <Compile Include="Families\Dto\FamilyDto.cs" />
+    <Compile Include="Families\Dto\GetAllFamiliesOutput.cs" />
+    <Compile Include="Families\Dto\GetFamilyInput.cs" />
+    <Compile Include="Families\IFamilyAppService.cs" />
+    <Compile Include="Families\Dto\UpdateFamilyInput.cs" />
     <Compile Include="FoyerApplicationModule.cs" />
     <Compile Include="FoyerAppServiceBase.cs" />
     <Compile Include="Authorization\Accounts\AccountAppService.cs" />

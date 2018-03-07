@@ -3,10 +3,9 @@ using Foyer.Families;
 using Foyer.FamilyRelationships;
 using Foyer.People;
 using System;
-using System.Data.Entity.Migrations;
 using System.Linq;
 
-namespace Foyer.Tests.SeedData
+namespace Foyer.Tests.TestData
 {
     public class FamiliesAndPeopleCreator
     {
@@ -36,7 +35,7 @@ namespace Foyer.Tests.SeedData
             var dembeleWife = AddPersonIfNotExists("Madame", "Dembélé", Gender.Male, new DateTime(1997, 5, 15), "France");
 
             //Add soft deleted person
-            var zidane = AddPersonIfNotExists("Zindine", "Zidane", Gender.Male, new DateTime(1972, 6, 23), "Marseille", true);
+            var zidane = AddPersonIfNotExists("Zindine", "Zidane", Gender.Male, new DateTime(1972, 6, 23), "Marseille", isDeleted: true);
 
             //Add some families
             var salahFamily = AddFamilyIfNotExists(salah, salahWife, new DateTime(2012, 6, 15));
@@ -53,6 +52,16 @@ namespace Foyer.Tests.SeedData
             AddMarriageRelationshipIfNotExists(dembeleFamily, dembele, dembeleWife);
         }
 
+        /// <summary>
+        /// Add Person entity if it does not Exist
+        /// </summary>
+        /// <param name="firstName">First name</param>
+        /// <param name="lastName">Last name</param>
+        /// <param name="gender">Gender</param>
+        /// <param name="birthDate">Birth date</param>
+        /// <param name="birthPlace">Birth place</param>
+        /// <param name="isDeleted">Is this person deleted</param>
+        /// <returns></returns>
         private Person AddPersonIfNotExists(string firstName, string lastName, Gender gender, DateTime birthDate, string birthPlace, bool isDeleted = false)
         {
             var person = _context.People.FirstOrDefault(p => p.FirstName == firstName && p.LastName == lastName && p.Gender == gender && p.BirthDate == birthDate);

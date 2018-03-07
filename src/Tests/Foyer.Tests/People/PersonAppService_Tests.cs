@@ -270,18 +270,12 @@ namespace Foyer.Tests.People
         {
             //Arrange
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
-            var randomId = initialPeopleCount + 1;
-            var foundPerson = GetPerson(randomId);
-
-            randomId.ShouldBeInRange(1, int.MaxValue);
-            //So the test works correctly.
-            foundPerson.ShouldBeNull(@"We should not find a person with the random Id.
-                If foundPerson is not null, try change the randomId value with not existing Id.");
+            var notExistingPersonId = GenerateNotExistingPersonId();
 
             //All input fields are valid but this person do not exist.
             var notExistingPerson = new UpdatePersonInput
             {
-                PersonId = randomId,
+                PersonId = notExistingPersonId,
                 FirstName = "Lo",
                 LastName = "Celso",
                 Gender = Gender.Male,
@@ -474,15 +468,9 @@ namespace Foyer.Tests.People
         public void Should_Not_Delete_Person_If_Person_Id_Does_Not_Exist()
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
-            var randomId = initialPeopleCount + 1;
-            var foundPerson = GetPerson(randomId);
+            var notExistingPersonId = GenerateNotExistingPersonId();
 
-            randomId.ShouldBeInRange(1, int.MaxValue);
-            //So the test works correctly.
-            foundPerson.ShouldBeNull(@"We should not find a person with the random Id.
-                If foundPerson is not null, try change the randomId value with not existing Id.");
-
-            Should.Throw<UserFriendlyException>(() => _personAppService.Delete(new DeletePersonInput { PersonId = randomId }))
+            Should.Throw<UserFriendlyException>(() => _personAppService.Delete(new DeletePersonInput { PersonId = notExistingPersonId }))
                 .Message.ShouldBe("This Person does not exist");
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
@@ -532,16 +520,10 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Throw_EntityNotFoundException_If_GetPersonInput_Id_Does_Not_Exist()
         {
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
-            var randomId = initialPeopleCount + 1;
-            var foundPerson = GetPerson(randomId);
+            //Generate methode make some assertions to test if generated Id does not exist.
+            var notExistingPersonId = GenerateNotExistingPersonId();
 
-            randomId.ShouldBeInRange(1, int.MaxValue);
-            //So the test works correctly.
-            foundPerson.ShouldBeNull(@"We should not find a person with the random Id.
-                If foundPerson is not null, try change the randomId value with not existing Id.");
-
-            Should.Throw<EntityNotFoundException>(() => _personAppService.Get(new GetPersonInput { PersonId = randomId }));
+            Should.Throw<EntityNotFoundException>(() => _personAppService.Get(new GetPersonInput { PersonId = notExistingPersonId }));
         }
 
         [Fact]
@@ -564,18 +546,6 @@ namespace Foyer.Tests.People
             var output = await _personAppService.GetAllPeople();
 
             output.People.Count().ShouldBeGreaterThan(0);
-        }
-        #endregion
-
-        #region Private methodes
-        private Person GetPerson(int personId)
-        {
-            return UsingDbContext(context => context.People.FirstOrDefault(p => p.Id == personId));
-        }
-
-        private Person GetPerson(string firstName, string lastName)
-        {
-            return UsingDbContext(context => context.People.Single(p => p.FirstName == firstName && p.LastName == lastName));
         }
         #endregion
     }

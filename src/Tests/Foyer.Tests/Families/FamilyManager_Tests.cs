@@ -15,12 +15,28 @@ namespace Foyer.Tests.Families
         }
 
         [Fact]
-        public void Should_Assign_Person_As_Head_Of_Family()
+        public void Should_Assign_Person_Head_Of_Family()
         {
-            Family family = new Family() { Id = 1 };
-            Person person = new Person() { Id = 1 };
+            var person = new Person() { Id = 1 };
+            var family = new Family() { Id = 1 };
 
-            _familyManager.AssignPersonHeadOfFamily(family, person);
+            _familyManager.AssignPersonHeadOfFamily(person, family);
+
+            family.HeadOfFamilyId.ShouldBe(person.Id);
+        }
+
+        [Fact]
+        public void Should_Do_Nothing_If_Assigned_Person_Is_Already_Head_Of_Family()
+        {
+            var person = new Person { Id = 1 };
+
+            var family = new Family
+            {
+                Id = 1,
+                HeadOfFamilyId = person.Id
+            };
+
+            _familyManager.AssignPersonHeadOfFamily(person, family);
 
             family.HeadOfFamilyId.ShouldBe(person.Id);
         }

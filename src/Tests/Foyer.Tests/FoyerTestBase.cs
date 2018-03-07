@@ -16,7 +16,10 @@ using Foyer.MultiTenancy;
 using Castle.MicroKernel.Registration;
 using Effort;
 using EntityFramework.DynamicFilters;
-using Foyer.Tests.SeedData;
+using Foyer.Tests.TestData;
+using Foyer.People;
+using Foyer.Families;
+using Shouldly;
 
 namespace Foyer.Tests
 {
@@ -290,6 +293,62 @@ namespace Foyer.Tests
         {
             var tenantId = AbpSession.GetTenantId();
             return await UsingDbContext(context => context.Tenants.SingleAsync(t => t.Id == tenantId));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="personId">Person Id</param>
+        /// <returns>Returns null if no person was found.</returns>
+        protected Person GetPerson(int personId)
+        {
+            return UsingDbContext(context => context.People.FirstOrDefault(p => p.Id == personId));
+        }
+
+        protected Person GetPerson(string firstName, string lastName)
+        {
+            return UsingDbContext(context => context.People.Single(p => p.FirstName == firstName && p.LastName == lastName));
+        }
+
+        protected Family GetFamilyFromHeadOfFamilyId(int headOfFamilyId)
+        {
+            return UsingDbContext(context => context.Families.First(f => f.HeadOfFamilyId == headOfFamilyId));
+        }
+
+        protected Family GetFamilyFromHeadOfFamilyName(string headOfFamilyFirstName, string headOfFamilyLastName)
+        {
+            return UsingDbContext(context =>
+                context
+                .Families
+                .First(f => f.HeadOfFamily.FirstName == headOfFamilyFirstName && f.HeadOfFamily.LastName == headOfFamilyLastName));
+        }
+
+        protected int GenerateNotExistingPersonId()
+        {
+            return UsingDbContext(context => {
+                var randomId = context.People.Count() + 1;
+                randomId.ShouldBeInRange(1, int.MaxValue);
+
+                context.People.FirstOrDefault(p => p.Id == randomId)
+                    .ShouldBeNull(@"We should not find a person with the generated Id.
+                        If a person is found with this Id try to change it with not existing Id.");
+
+                return randomId;
+            });
+        }
+
+        protected int GenerateNotExistingFamilyId()
+        {
+            return UsingDbContext(context => {
+                var randomId = context.Families.Count() + 1;
+                randomId.ShouldBeInRange(1, int.MaxValue);
+
+                context.Families.FirstOrDefault(f => f.Id == randomId)
+                    .ShouldBeNull(@"We should not find a family with the generated Id.
+                        If a family is found with this Id try to change it with not existing Id.");
+
+                return randomId;
+            });
         }
     }
 }

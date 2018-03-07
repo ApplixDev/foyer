@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Abp.Authorization.Users;
 
 namespace Foyer.Families
 {
@@ -16,7 +17,6 @@ namespace Foyer.Families
         /// <summary>
         /// Head of family.
         /// </summary>
-        [Required]
         [ForeignKey(nameof(HeadOfFamilyId))]
         public virtual Person HeadOfFamily { get; set; }
         public virtual int? HeadOfFamilyId { get; set; }
@@ -24,7 +24,7 @@ namespace Foyer.Families
         /// <summary>
         /// Family name.
         /// </summary>
-        [StringLength(MaxFamilyNameLength)]
+        [StringLength(AbpUserBase.MaxNameLength)]
         public virtual string FamilyName { get; set; }
 
         /// <summary>

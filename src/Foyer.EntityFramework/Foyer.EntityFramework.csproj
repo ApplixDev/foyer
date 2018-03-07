@@ -243,6 +243,10 @@
     <Compile Include="Migrations\201802281413064_Make HeadOfFamily Required.Designer.cs">
       <DependentUpon>201802281413064_Make HeadOfFamily Required.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803071414137_Update_HeadOfFamily_Not_Required.cs" />
+    <Compile Include="Migrations\201803071414137_Update_HeadOfFamily_Not_Required.Designer.cs">
+      <DependentUpon>201803071414137_Update_HeadOfFamily_Not_Required.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AbpZeroDbMigrator.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="FoyerDataModule.cs" />
@@ -292,6 +296,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802281413064_Make HeadOfFamily Required.resx">
       <DependentUpon>201802281413064_Make HeadOfFamily Required.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803071414137_Update_HeadOfFamily_Not_Required.resx">
+      <DependentUpon>201803071414137_Update_HeadOfFamily_Not_Required.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

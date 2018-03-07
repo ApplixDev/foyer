@@ -26,5 +26,7 @@ namespace Foyer.People.Dto
 
         [StringLength(Person.MaxDetailsLength)]
         public string OtherDetails { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }
