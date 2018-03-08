@@ -15,23 +15,17 @@ namespace Foyer.Families
         public const int MaxFamilyNameLength = 32;
 
         /// <summary>
-        /// Head of family.
-        /// </summary>
-        [ForeignKey(nameof(HeadOfFamilyId))]
-        public virtual Person HeadOfFamily { get; set; }
-        public virtual int? HeadOfFamilyId { get; set; }
-
-        /// <summary>
         /// Family name.
         /// </summary>
         [StringLength(AbpUserBase.MaxNameLength)]
         public virtual string FamilyName { get; set; }
 
         /// <summary>
-        /// Other details of the family.
+        /// Head of family.
         /// </summary>
-        [StringLength(MaxDetailsLength)]
-        public virtual string OtherDetails { get; set; }
+        [ForeignKey(nameof(HeadOfFamilyId))]
+        public virtual Person HeadOfFamily { get; set; }
+        public virtual int? HeadOfFamilyId { get; set; }
 
         /// <summary>
         /// Widing date.
@@ -42,6 +36,12 @@ namespace Foyer.Families
         /// Separation date.
         /// </summary>
         public virtual DateTime? DivorceDate { get; set; }
+
+        /// <summary>
+        /// Other details of the family.
+        /// </summary>
+        [StringLength(MaxDetailsLength)]
+        public virtual string OtherDetails { get; set; }
 
         /// <summary>
         /// Used to mark family as deleted.

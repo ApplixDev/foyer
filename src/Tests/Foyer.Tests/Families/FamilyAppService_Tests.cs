@@ -26,7 +26,7 @@ namespace Foyer.Tests.Families
 
         #region AssignPersonHeadOfFamily tests
         [Fact]
-        public void Should_Assign_New_Person_Head_Of_New_Family()
+        public void Should_Assign_Person_Head_Of_Family()
         {
             var newPerson = UsingDbContext(Context => Context.People.Add(new Person
             {
@@ -52,6 +52,24 @@ namespace Foyer.Tests.Families
                 var createdFamily = context.Families.FirstOrDefault(f => f.Id == newFamily.Id);
                 createdFamily.ShouldNotBeNull();
                 createdFamily.HeadOfFamilyId.ShouldBe(createdPerson.Id);
+            });
+        }
+
+        [Fact]
+        public void Should_Not_Throw_Exception_If_Assigned_Person_Is_Already_Head_Of_Family()
+        {
+            var salahId = GetPerson("Mohamed", "Salah").Id;
+            var salahFamilyId = GetFamilyFromHeadOfFamilyId(salahId).Id;
+
+            Should.NotThrow(() => _familyAppService.AssignPersonHeadOfFamily(new PersonHeadOfFamilyInput
+            {
+                PersonId = salahId,
+                FamilyId = salahFamilyId
+            }));
+
+            UsingDbContext(context =>
+            {
+                context.Families.FirstOrDefault(f => f.Id == salahFamilyId && f.HeadOfFamilyId == salahId).ShouldNotBeNull();
             });
         }
 
