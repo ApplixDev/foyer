@@ -12,6 +12,8 @@
         Son = 5,
         Daugther = 6,
         Brother = 7,
-        Sister = 8
+        Sister = 8,
+        FatherWife = 9,
+        MotherHusband = 10
     }
 }
