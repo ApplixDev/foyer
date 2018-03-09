@@ -31,32 +31,19 @@ namespace Foyer.Families
 
         public void Create(CreateFamilyInput input)
         {
-            //Try find methode to identify existing family:
+            //var family = _familyRepository.FirstOrDefault(f =>
+            //    (f.HusbandId != null && f.HusbandId == input.HusbandId) ||
+            //    (f.WifeId != null && f.WifeId == input.WifeId)
+            //);
 
-            //var family = _familyRepository.FirstOrDefault(
-            //                f => f.FamilyName != null &&
-            //                f.FamilyName == input.FamilyName &&
-            //                f.HeadOfFamilyId != null &&
-            //                f.HeadOfFamilyId == input.HeadOfFamilyId &&
-            //                f.WidingDate != null &&
-            //                f.WidingDate == input.WidingDate);
-
-            if (input.FamilyName != null && input.HeadOfFamilyId.HasValue && input.WidingDate != null)
-            {
-                var family = _familyRepository.FirstOrDefault(
-                            f => f.FamilyName == input.FamilyName &&
-                            f.HeadOfFamilyId == input.HeadOfFamilyId &&
-                            f.WidingDate == input.WidingDate);
-
-                if (family != null)
-                {
-                    throw new UserFriendlyException("This family already exist");
-                }
-            }
+            var family = _familyRepository.GetAll()
+                .WhereIf(input.HusbandId.HasValue, f => f.HusbandId == input.HusbandId)
+                .WhereIf(input.WifeId.HasValue, f => f.WifeId != null && f.WifeId == input.WifeId)
+                .FirstOrDefault();
 
             if (family != null)
             {
-                return;
+                throw new UserFriendlyException("This family already exist");
             }
 
             family = _objectMapper.Map<Family>(input);

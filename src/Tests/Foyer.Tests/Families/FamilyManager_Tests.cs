@@ -22,7 +22,7 @@ namespace Foyer.Tests.Families
 
             _familyManager.AssignPersonHeadOfFamily(person, family);
 
-            family.HeadOfFamilyId.ShouldBe(person.Id);
+            family.HusbandId.ShouldBe(person.Id);
         }
 
         [Fact]
@@ -33,12 +33,12 @@ namespace Foyer.Tests.Families
             var family = new Family
             {
                 Id = 1,
-                HeadOfFamilyId = person.Id
+                HusbandId = person.Id
             };
 
             _familyManager.AssignPersonHeadOfFamily(person, family);
 
-            family.HeadOfFamilyId.ShouldBe(person.Id);
+            family.HusbandId.ShouldBe(person.Id);
         }
     }
 }

@@ -7,12 +7,12 @@ namespace Foyer.Families
     {
         public void AssignPersonHeadOfFamily(Person person, Family family)
         {
-            if (family.HeadOfFamilyId == person.Id)
+            if (family.HusbandId == person.Id)
             {
                 return;
             }
 
-            family.HeadOfFamilyId = person.Id;
+            family.HusbandId = person.Id;
         }
     }
 }

@@ -27,6 +27,8 @@ namespace Foyer.Tests
     {
         private DbConnection _hostDb;
         private Dictionary<int, DbConnection> _tenantDbs; //only used for db per tenant architecture
+        
+        #region ctor
 
         protected FoyerTestBase()
         {
@@ -48,6 +50,8 @@ namespace Foyer.Tests
 
             LoginAsDefaultTenantAdmin();
         }
+
+        #endregion
 
         protected override void PreInitialize()
         {
@@ -312,7 +316,7 @@ namespace Foyer.Tests
 
         protected Family GetFamilyFromHeadOfFamilyId(int headOfFamilyId)
         {
-            return UsingDbContext(context => context.Families.First(f => f.HeadOfFamilyId == headOfFamilyId));
+            return UsingDbContext(context => context.Families.First(f => f.HusbandId == headOfFamilyId));
         }
 
         protected Family GetFamilyFromHeadOfFamilyName(string headOfFamilyFirstName, string headOfFamilyLastName)
@@ -320,12 +324,13 @@ namespace Foyer.Tests
             return UsingDbContext(context =>
                 context
                 .Families
-                .First(f => f.HeadOfFamily.FirstName == headOfFamilyFirstName && f.HeadOfFamily.LastName == headOfFamilyLastName));
+                .First(f => f.Husband.FirstName == headOfFamilyFirstName && f.Husband.LastName == headOfFamilyLastName));
         }
 
         protected int GenerateNotExistingPersonId()
         {
-            return UsingDbContext(context => {
+            return UsingDbContext(context =>
+            {
                 var randomId = context.People.Count() + 1;
                 randomId.ShouldBeInRange(1, int.MaxValue);
 
@@ -339,7 +344,8 @@ namespace Foyer.Tests
 
         protected int GenerateNotExistingFamilyId()
         {
-            return UsingDbContext(context => {
+            return UsingDbContext(context =>
+            {
                 var randomId = context.Families.Count() + 1;
                 randomId.ShouldBeInRange(1, int.MaxValue);
 
@@ -350,5 +356,22 @@ namespace Foyer.Tests
                 return randomId;
             });
         }
+
+        //Tried to create generic methode that take a DbSet as parameter and count the number of entries for that entity.
+        //This methode does not work. To retry !
+
+        //protected int CountProcess<T>(Func<FoyerDbContext, DbSet<T>> selector) where T : DbSet
+        //{
+        //    return UsingDbContext(context =>
+        //    {
+        //        return selector(context).Count();
+        //    });
+        //}
+
+        //protected int CountPeople()
+        //{
+        //    return CountProcess(context => context.People);
+        //}
+
     }
 }

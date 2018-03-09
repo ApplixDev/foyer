@@ -86,13 +86,13 @@ namespace Foyer.Tests.TestData
 
         private Family AddFamilyIfNotExists(Person husband, Person wife, DateTime widingDate)
         {
-            var family = _context.Families.FirstOrDefault(p => p.HeadOfFamily.Id == husband.Id && p.WidingDate == widingDate);
+            var family = _context.Families.FirstOrDefault(p => p.Husband.Id == husband.Id && p.WidingDate == widingDate);
 
             if (family == null)
             {
                 family = _context.Families.Add(new Family()
                 {
-                    HeadOfFamily = husband,
+                    Husband = husband,
                     FamilyName = husband.LastName,
                     WidingDate = widingDate
                 });

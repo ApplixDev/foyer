@@ -10,20 +10,23 @@ namespace Foyer.Tests.Utilities
 {
     public class Utility_Tests
     {
-        private Dictionary<string, string> ProjectsAssembliesPath = new Dictionary<string, string>();
+        private Dictionary<string, string> ProjectsAssembliesPath;
         private ITestOutputHelper _output;
 
         public Utility_Tests(ITestOutputHelper output)
         {
             _output = output;
 
-            ProjectsAssembliesPath.Add("Test", @"C:\projects\Foyer\3.2.0\src\Tests\Foyer.Tests\bin\Debug");
-            ProjectsAssembliesPath.Add("Migrator", @"C:\projects\Foyer\3.2.0\src\Tools\Foyer.Migrator\bin\Debug");
-            ProjectsAssembliesPath.Add("Application", @"C:\projects\Foyer\3.2.0\src\Foyer.Application\bin\Debug");
-            ProjectsAssembliesPath.Add("Core", @"C:\projects\Foyer\3.2.0\src\Foyer.Core\bin\Debug");
-            ProjectsAssembliesPath.Add("EntityFramework", @"C:\projects\Foyer\3.2.0\src\Foyer.EntityFramework\bin\Debug");
-            ProjectsAssembliesPath.Add("Web", @"C:\projects\Foyer\3.2.0\src\Foyer.Web\bin");
-            ProjectsAssembliesPath.Add("WebApi", @"C:\projects\Foyer\3.2.0\src\Foyer.WebApi\bin\Debug");
+            ProjectsAssembliesPath = new Dictionary<string, string>
+            {
+                { "Test", @"C:\projects\Foyer\3.2.0\src\Tests\Foyer.Tests\bin\Debug" },
+                { "Migrator", @"C:\projects\Foyer\3.2.0\src\Tools\Foyer.Migrator\bin\Debug" },
+                { "Application", @"C:\projects\Foyer\3.2.0\src\Foyer.Application\bin\Debug" },
+                { "Core", @"C:\projects\Foyer\3.2.0\src\Foyer.Core\bin\Debug" },
+                { "EntityFramework", @"C:\projects\Foyer\3.2.0\src\Foyer.EntityFramework\bin\Debug" },
+                { "Web", @"C:\projects\Foyer\3.2.0\src\Foyer.Web\bin" },
+                { "WebApi", @"C:\projects\Foyer\3.2.0\src\Foyer.WebApi\bin\Debug" }
+            };
         }
 
         [Fact]

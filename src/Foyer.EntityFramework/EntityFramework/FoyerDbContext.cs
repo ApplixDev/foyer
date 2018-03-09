@@ -38,7 +38,7 @@ namespace Foyer.EntityFramework
         public FoyerDbContext(DbConnection existingConnection)
          : base(existingConnection, false)
         {
-
+            
         }
 
         public FoyerDbContext(DbConnection existingConnection, bool contextOwnsConnection)

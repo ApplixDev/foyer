@@ -51,7 +51,7 @@ namespace Foyer.Tests.Families
 
                 var createdFamily = context.Families.FirstOrDefault(f => f.Id == newFamily.Id);
                 createdFamily.ShouldNotBeNull();
-                createdFamily.HeadOfFamilyId.ShouldBe(createdPerson.Id);
+                createdFamily.HusbandId.ShouldBe(createdPerson.Id);
             });
         }
 
@@ -69,7 +69,7 @@ namespace Foyer.Tests.Families
 
             UsingDbContext(context =>
             {
-                context.Families.FirstOrDefault(f => f.Id == salahFamilyId && f.HeadOfFamilyId == salahId).ShouldNotBeNull();
+                context.Families.FirstOrDefault(f => f.Id == salahFamilyId && f.HusbandId == salahId).ShouldNotBeNull();
             });
         }
 
