@@ -8,10 +8,12 @@ namespace Foyer.Families
     public interface IFamilyAppService : IApplicationService
     {
         Task<GetAllFamiliesOutput> GetAllFamilies();
-        void Create(CreateFamilyInput input);
-        void Update(UpdateFamilyInput input);
+        //Task<FamiliesWithParentsOutput> GetAllFamiliesWithParents();
+        void Create(CreateFamilyDto input);
+        void Update(UpdateFamilyDto input);
         void Delete(DeleteFamilyInput input);
         FamilyDto Get(GetFamilyInput input);
-        void AssignPersonHeadOfFamily(PersonHeadOfFamilyInput input);
+        void AssignFamilyFather(AssignFamilyParentInput input);
+        void AssignFamilyMother(AssignFamilyParentInput input);
     }
 }

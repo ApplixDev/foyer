@@ -2,11 +2,8 @@
 
 namespace Foyer.Families.Dto
 {
-    public class PersonHeadOfFamilyInput
+    public class UpdateFamilyDto : CreateFamilyDto
     {
-        [Range(1, int.MaxValue)]
-        public int PersonId { get; set; }
-
         [Range(1, int.MaxValue)]
         public int FamilyId { get; set; }
     }

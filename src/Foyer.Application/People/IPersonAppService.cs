@@ -8,9 +8,9 @@ namespace Foyer.People
     public interface IPersonAppService : IApplicationService
     {
         Task<GetAllPeopleOutput> GetAllPeople();
-        void Create(CreatePersonInput input);
-        Task CreateAsync(CreatePersonInput input);
-        void Update(UpdatePersonInput input);
+        void Create(CreatePersonDto input);
+        Task CreateAsync(CreatePersonDto input);
+        void Update(UpdatePersonDto input);
         void Delete(DeletePersonInput input);
         PersonDto Get(GetPersonInput input);
     }

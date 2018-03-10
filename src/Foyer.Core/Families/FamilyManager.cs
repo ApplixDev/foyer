@@ -5,14 +5,24 @@ namespace Foyer.Families
 {
     public class FamilyManager : DomainService, IFamilyManager
     {
-        public void AssignPersonHeadOfFamily(Person person, Family family)
+        public void AssignFamilyFather(Family family, Person father)
         {
-            if (family.HusbandId == person.Id)
+            if (family.HusbandId == father.Id)
             {
                 return;
             }
 
-            family.HusbandId = person.Id;
+            family.HusbandId = father.Id;
+        }
+
+        public void AssignFamilyMother(Family family, Person mother)
+        {
+            if (family.WifeId == mother.Id)
+            {
+                return;
+            }
+
+            family.WifeId = mother.Id;
         }
     }
 }

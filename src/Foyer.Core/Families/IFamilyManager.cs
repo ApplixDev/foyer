@@ -5,6 +5,7 @@ namespace Foyer.Families
 {
     public interface IFamilyManager : IDomainService
     {
-        void AssignPersonHeadOfFamily(Person person, Family family);
+        void AssignFamilyFather(Family family, Person father);
+        void AssignFamilyMother(Family family, Person mother);
     }
 }

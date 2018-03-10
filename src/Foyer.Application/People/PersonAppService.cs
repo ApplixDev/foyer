@@ -21,37 +21,39 @@ namespace Foyer.People
             _objectMapper = objectMapper;
         }
 
-        public void Create(CreatePersonInput input)
+        public void Create(CreatePersonDto input)
         {
-            var person = MapInputToPersonIfNotExists(input);
+            CheckIfInputPersonExist(input);
+            var person = MapToEntity(input);
             _personRepository.Insert(person);
         }
 
-        public async Task CreateAsync(CreatePersonInput input)
+        public async Task CreateAsync(CreatePersonDto input)
         {
-            var person = MapInputToPersonIfNotExists(input);
+            CheckIfInputPersonExist(input);
+            var person = MapToEntity(input);
             await _personRepository.InsertAsync(person);
         }
 
-        private Person MapInputToPersonIfNotExists(CreatePersonInput input)
+        private void CheckIfInputPersonExist(CreatePersonDto input)
         {
-            var person = _personRepository.FirstOrDefault(
-                            p => p.FirstName == input.FirstName &&
-                            p.LastName == input.LastName &&
-                            p.BirthDate == input.BirthDate);
+            var person = _personRepository.FirstOrDefault
+            (
+                p => p.FirstName == input.FirstName &&
+                p.LastName == input.LastName &&
+                p.BirthDate == input.BirthDate
+            );
 
             if (person != null)
             {
                 throw new UserFriendlyException("This Person already exist");
             }
-
-            return _objectMapper.Map<Person>(input);
         }
 
-        public void Update(UpdatePersonInput input)
+        public void Update(UpdatePersonDto input)
         {
             Person person = _personRepository.Get(input.PersonId);
-            _objectMapper.Map(input, person);
+            MapToEntity(input, person);
         }
 
         public void Delete(DeletePersonInput input)
@@ -75,10 +77,21 @@ namespace Foyer.People
         public async Task<GetAllPeopleOutput> GetAllPeople()
         {
             var people = await _personRepository.GetAllListAsync();
+            
             return new GetAllPeopleOutput
             {
                 People = _objectMapper.Map<List<PersonDto>>(people)
             };
+        }
+
+        protected Person MapToEntity(CreatePersonDto input)
+        {
+            return _objectMapper.Map<Person>(input);
+        }
+
+        protected void MapToEntity(UpdatePersonDto input, Person person)
+        {
+            _objectMapper.Map(input, person);
         }
     }
 }

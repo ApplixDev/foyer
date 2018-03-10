@@ -30,7 +30,7 @@ namespace Foyer.Tests.People
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            var loCelso = new CreatePersonInput
+            var loCelso = new CreatePersonDto
             {
                 FirstName = "Lo",
                 LastName = "Celso",
@@ -59,7 +59,7 @@ namespace Foyer.Tests.People
         {
             //Act
             await _personAppService.CreateAsync(
-                new CreatePersonInput
+                new CreatePersonDto
                 {
                     FirstName = "John",
                     LastName = "Nash",
@@ -81,7 +81,7 @@ namespace Foyer.Tests.People
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            var salah = new CreatePersonInput
+            var salah = new CreatePersonDto
             {
                 FirstName = "Mohamed",
                 LastName = "Salah",
@@ -99,7 +99,7 @@ namespace Foyer.Tests.People
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            var personWithNullFirstName = new CreatePersonInput
+            var personWithNullFirstName = new CreatePersonDto
             {
                 LastName = "Doe",
                 Gender = Gender.Male,
@@ -119,7 +119,7 @@ namespace Foyer.Tests.People
 
             var OversizedFirstName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
 
-            var personWithOversizedFirstNameLength = new CreatePersonInput
+            var personWithOversizedFirstNameLength = new CreatePersonDto
             {
                 FirstName = OversizedFirstName,
                 LastName = "Doe",
@@ -138,7 +138,7 @@ namespace Foyer.Tests.People
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            var personWithNullLastName = new CreatePersonInput
+            var personWithNullLastName = new CreatePersonDto
             {
                 FirstName = "John",
                 Gender = Gender.Male,
@@ -158,7 +158,7 @@ namespace Foyer.Tests.People
 
             var OversizedLastName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
 
-            var personWithOversizedLastNameLength = new CreatePersonInput
+            var personWithOversizedLastNameLength = new CreatePersonDto
             {
                 FirstName = "John",
                 LastName = OversizedLastName,
@@ -177,7 +177,7 @@ namespace Foyer.Tests.People
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            var personWithInvalidGenderValue = new CreatePersonInput
+            var personWithInvalidGenderValue = new CreatePersonDto
             {
                 FirstName = "John",
                 LastName = "Doe",
@@ -200,7 +200,7 @@ namespace Foyer.Tests.People
 
             var OversizedDetails = Strings.GenerateRandomString(Person.MaxDetailsLength + 1);
 
-            var personWithOversizedDetailsLength = new CreatePersonInput
+            var personWithOversizedDetailsLength = new CreatePersonDto
             {
                 FirstName = "John",
                 LastName = "Doe",
@@ -221,7 +221,7 @@ namespace Foyer.Tests.People
 
             var OversizedBirthPlace = Strings.GenerateRandomString(Person.MaxBirthPlaceNameLength + 1);
 
-            var personWithOversizedBirthPlaceLength = new CreatePersonInput
+            var personWithOversizedBirthPlaceLength = new CreatePersonDto
             {
                 FirstName = "John",
                 LastName = "Doe",
@@ -240,7 +240,7 @@ namespace Foyer.Tests.People
         public void Should_Update_Person()
         {
             var salah = GetPerson("Mohamed", "Salah");
-            var updatedSalah = new UpdatePersonInput
+            var updatedSalah = new UpdatePersonDto
             {
                 PersonId = salah.Id,
                 FirstName = "Mohammed",
@@ -273,7 +273,7 @@ namespace Foyer.Tests.People
             var notExistingPersonId = GenerateNotExistingPersonId();
 
             //All input fields are valid but this person do not exist.
-            var notExistingPerson = new UpdatePersonInput
+            var notExistingPerson = new UpdatePersonDto
             {
                 PersonId = notExistingPersonId,
                 FirstName = "Lo",
@@ -291,7 +291,7 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Not_Update_Person_If_Person_Id_Is_Out_Of_Range()
         {
-            var newPerson = new UpdatePersonInput
+            var newPerson = new UpdatePersonDto
             {
                 //PersonId = 0 by default
                 FirstName = "Lo",
@@ -309,7 +309,7 @@ namespace Foyer.Tests.People
         public void Should_Not_Update_Person_If_FirstName_Is_Null()
         {
             var salah = GetPerson("Mohamed", "Salah");
-            var salahWithNullFirstName = new UpdatePersonInput
+            var salahWithNullFirstName = new UpdatePersonDto
             {
                 PersonId = salah.Id,
                 LastName = salah.LastName,
@@ -329,7 +329,7 @@ namespace Foyer.Tests.People
             var salah = GetPerson("Mohamed", "Salah");
             var OversizedFirstName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
 
-            var salahWithOversizedFirstNameLength = new UpdatePersonInput
+            var salahWithOversizedFirstNameLength = new UpdatePersonDto
             {
                 PersonId = salah.Id,
                 FirstName = OversizedFirstName,
@@ -348,7 +348,7 @@ namespace Foyer.Tests.People
         {
             var salah = GetPerson("Mohamed", "Salah");
 
-            var salahWithNullLastName = new UpdatePersonInput
+            var salahWithNullLastName = new UpdatePersonDto
             {
                 PersonId = salah.Id,
                 FirstName = salah.FirstName,
@@ -368,7 +368,7 @@ namespace Foyer.Tests.People
             var salah = GetPerson("Mohamed", "Salah");
             var OversizedLastName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
 
-            var salahWithOversizedLastNameLength = new UpdatePersonInput
+            var salahWithOversizedLastNameLength = new UpdatePersonDto
             {
                 PersonId = salah.Id,
                 FirstName = salah.FirstName,
@@ -387,7 +387,7 @@ namespace Foyer.Tests.People
         {
             var salah = GetPerson("Mohamed", "Salah");
 
-            var personWithInvalidGenderValue = new UpdatePersonInput
+            var personWithInvalidGenderValue = new UpdatePersonDto
             {
                 PersonId = salah.Id,
                 FirstName = salah.FirstName,
@@ -408,7 +408,7 @@ namespace Foyer.Tests.People
             var salah = GetPerson("Mohamed", "Salah");
             var OversizedBirthPlace = Strings.GenerateRandomString(Person.MaxBirthPlaceNameLength + 1);
 
-            var personWithOversizedBirthPlaceLength = new UpdatePersonInput
+            var personWithOversizedBirthPlaceLength = new UpdatePersonDto
             {
                 PersonId = salah.Id,
                 FirstName = salah.FirstName,
@@ -428,7 +428,7 @@ namespace Foyer.Tests.People
             var salah = GetPerson("Mohamed", "Salah");
             var OversizedDetails = Strings.GenerateRandomString(Person.MaxDetailsLength + 1);
 
-            var personWithOversizedDetailsLength = new UpdatePersonInput
+            var personWithOversizedDetailsLength = new UpdatePersonDto
             {
                 PersonId = salah.Id,
                 FirstName = salah.FirstName,

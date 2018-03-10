@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Foyer.People.Dto
 {
     [AutoMapTo(typeof(Person))]
-    public class CreatePersonInput
+    public class CreatePersonDto
     {
         [Required]
         [StringLength(AbpUserBase.MaxNameLength)]
@@ -19,7 +19,7 @@ namespace Foyer.People.Dto
         [EnumDataType(typeof(Gender))]
         public Gender Gender { get; set; }
 
-        public DateTime? BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
 
         [StringLength(Person.MaxBirthPlaceNameLength)]
         public string BirthPlace { get; set; }

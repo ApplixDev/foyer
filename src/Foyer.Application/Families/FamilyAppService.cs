@@ -29,29 +29,31 @@ namespace Foyer.Families
             _objectMapper = objectMapper;
         }
 
-        public void Create(CreateFamilyInput input)
+        public void Create(CreateFamilyDto input)
         {
-            //var family = _familyRepository.FirstOrDefault(f =>
-            //    (f.HusbandId != null && f.HusbandId == input.HusbandId) ||
-            //    (f.WifeId != null && f.WifeId == input.WifeId)
-            //);
+            CheckIfInputFamilyExist(input);
 
-            var family = _familyRepository.GetAll()
-                .WhereIf(input.HusbandId.HasValue, f => f.HusbandId == input.HusbandId)
-                .WhereIf(input.WifeId.HasValue, f => f.WifeId != null && f.WifeId == input.WifeId)
-                .FirstOrDefault();
-
-            if (family != null)
-            {
-                throw new UserFriendlyException("This family already exist");
-            }
-
-            family = _objectMapper.Map<Family>(input);
+            var family = MapToEntity(input);
 
             _familyRepository.Insert(family);
         }
 
-        public void Update(UpdateFamilyInput input)
+        private void CheckIfInputFamilyExist(CreateFamilyDto input)
+        {
+            var familyExist = _familyRepository.GetAll()
+                .WhereIf(input.HusbandId.HasValue, f => f.HusbandId == input.HusbandId)
+                .WhereIf(!input.HusbandId.HasValue, f => f.HusbandId == null)
+                .WhereIf(input.WifeId.HasValue, f => f.WifeId == input.WifeId)
+                .WhereIf(!input.WifeId.HasValue, f => f.WifeId == null)
+                .Any();
+
+            if (familyExist)
+            {
+                throw new UserFriendlyException("This family already exist");
+            }
+        }
+
+        public void Update(UpdateFamilyDto input)
         {
             throw new NotImplementedException();
         }
@@ -71,12 +73,42 @@ namespace Foyer.Families
             throw new NotImplementedException();
         }
 
-        public void AssignPersonHeadOfFamily(PersonHeadOfFamilyInput input)
+        public void AssignFamilyFather(AssignFamilyParentInput input)
         {
-            var person = _personRepository.Get(input.PersonId);
+            var father = _personRepository.Get(input.ParentId);
+
+            if (father.Gender == Gender.Female)
+            {
+                throw new UserFriendlyException("You can not assign a female as a family father, a father must be a male");
+            }
+
             var family = _familyRepository.Get(input.FamilyId);
 
-            _familyManager.AssignPersonHeadOfFamily(person, family);
+            _familyManager.AssignFamilyFather(family, father);
+        }
+
+        public void AssignFamilyMother(AssignFamilyParentInput input)
+        {
+            var mother = _personRepository.Get(input.ParentId);
+
+            if (mother.Gender == Gender.Male)
+            {
+                throw new UserFriendlyException("You can not assign a male as a family mother, a mother must be a female");
+            }
+
+            var family = _familyRepository.Get(input.FamilyId);
+
+            _familyManager.AssignFamilyMother(family, mother);
+        }
+
+        protected Family MapToEntity(CreateFamilyDto input)
+        {
+            return _objectMapper.Map<Family>(input);
+        }
+
+        protected void MapToEntity(UpdateFamilyDto input, Family family)
+        {
+            _objectMapper.Map(input, family);
         }
     }
 }

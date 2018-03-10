@@ -37,9 +37,9 @@ namespace Foyer.Tests.Families
 
             var newFamily = UsingDbContext(Context => Context.Families.Add(new Family()));
             
-            _familyAppService.AssignPersonHeadOfFamily(new PersonHeadOfFamilyInput
+            _familyAppService.AssignFamilyFather(new AssignFamilyParentInput
             {
-                PersonId = newPerson.Id,
+                ParentId = newPerson.Id,
                 FamilyId = newFamily.Id
             });
 
@@ -61,9 +61,9 @@ namespace Foyer.Tests.Families
             var salahId = GetPerson("Mohamed", "Salah").Id;
             var salahFamilyId = GetFamilyFromHeadOfFamilyId(salahId).Id;
 
-            Should.NotThrow(() => _familyAppService.AssignPersonHeadOfFamily(new PersonHeadOfFamilyInput
+            Should.NotThrow(() => _familyAppService.AssignFamilyFather(new AssignFamilyParentInput
             {
-                PersonId = salahId,
+                ParentId = salahId,
                 FamilyId = salahFamilyId
             }));
 
@@ -82,9 +82,9 @@ namespace Foyer.Tests.Families
 
             Should.Throw<EntityNotFoundException>(() =>
             {
-                _familyAppService.AssignPersonHeadOfFamily(new PersonHeadOfFamilyInput
+                _familyAppService.AssignFamilyFather(new AssignFamilyParentInput
                 {
-                    PersonId = notExistingPersonId,
+                    ParentId = notExistingPersonId,
                     FamilyId = newFamily.Id
                 });
             });
@@ -99,9 +99,9 @@ namespace Foyer.Tests.Families
 
             Should.Throw<AbpValidationException>(() =>
             {
-                _familyAppService.AssignPersonHeadOfFamily(new PersonHeadOfFamilyInput
+                _familyAppService.AssignFamilyFather(new AssignFamilyParentInput
                 {
-                    PersonId = outOfRangePersonId,
+                    ParentId = outOfRangePersonId,
                     FamilyId = salahFamilyId
                 });
             });
@@ -116,9 +116,9 @@ namespace Foyer.Tests.Families
 
             Should.Throw<EntityNotFoundException>(() =>
             {
-                _familyAppService.AssignPersonHeadOfFamily(new PersonHeadOfFamilyInput
+                _familyAppService.AssignFamilyFather(new AssignFamilyParentInput
                 {
-                    PersonId = salahId,
+                    ParentId = salahId,
                     FamilyId = notExistingFamilyId
                 });
             });
@@ -132,9 +132,9 @@ namespace Foyer.Tests.Families
 
             Should.Throw<AbpValidationException>(() =>
             {
-                _familyAppService.AssignPersonHeadOfFamily(new PersonHeadOfFamilyInput
+                _familyAppService.AssignFamilyFather(new AssignFamilyParentInput
                 {
-                    PersonId = salahId,
+                    ParentId = salahId,
                     FamilyId = OutOfRangeFamilyId
                 });
             });

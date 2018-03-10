@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Foyer.Families.Dto
 {
     [AutoMapTo(typeof(Family))]
-    public class CreateFamilyInput : ICustomValidate
+    public class CreateFamilyDto : ICustomValidate
     {
         [StringLength(AbpUserBase.MaxNameLength)]
         public string FamilyName { get; set; }

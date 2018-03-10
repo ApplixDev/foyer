@@ -20,7 +20,7 @@ namespace Foyer.Tests.Families
             var person = new Person() { Id = 1 };
             var family = new Family() { Id = 1 };
 
-            _familyManager.AssignPersonHeadOfFamily(person, family);
+            _familyManager.AssignFamilyFather(family, person);
 
             family.HusbandId.ShouldBe(person.Id);
         }
@@ -36,7 +36,7 @@ namespace Foyer.Tests.Families
                 HusbandId = person.Id
             };
 
-            _familyManager.AssignPersonHeadOfFamily(person, family);
+            _familyManager.AssignFamilyFather(family, person);
 
             family.HusbandId.ShouldBe(person.Id);
         }

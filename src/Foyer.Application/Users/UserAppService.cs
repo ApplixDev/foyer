@@ -48,7 +48,7 @@ namespace Foyer.Users
         {
             CheckCreatePermission();
 
-            var user = ObjectMapper.Map<User>(input);
+            var user = MapToEntity(input);
 
             user.TenantId = AbpSession.TenantId;
             user.Password = new PasswordHasher().HashPassword(input.Password);
@@ -97,9 +97,9 @@ namespace Foyer.Users
             return new ListResultDto<RoleDto>(ObjectMapper.Map<List<RoleDto>>(roles));
         }
 
-        protected override User MapToEntity(CreateUserDto createInput)
+        protected override User MapToEntity(CreateUserDto input)
         {
-            var user = ObjectMapper.Map<User>(createInput);
+            var user = ObjectMapper.Map<User>(input);
             return user;
         }
 
