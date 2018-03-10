@@ -35,7 +35,7 @@ namespace Foyer.People
         /// <summary>
         /// Date of birth.
         /// </summary>
-        public virtual DateTime? BirthDate { get; set; }
+        public virtual DateTime BirthDate { get; set; }
 
         /// <summary>
         /// Place of birth.
