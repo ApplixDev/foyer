@@ -314,17 +314,22 @@ namespace Foyer.Tests
             return UsingDbContext(context => context.People.Single(p => p.FirstName == firstName && p.LastName == lastName));
         }
 
-        protected Family GetFamilyFromHeadOfFamilyId(int headOfFamilyId)
+        protected Family GetFamilyFromParentId(int parentId)
         {
-            return UsingDbContext(context => context.Families.First(f => f.HusbandId == headOfFamilyId));
+            return UsingDbContext(context => context.Families.First
+            (
+                f => f.FatherId == parentId || f.MotherId == parentId
+            ));
         }
 
-        protected Family GetFamilyFromHeadOfFamilyName(string headOfFamilyFirstName, string headOfFamilyLastName)
+        protected Family GetFamilyFromParentName(string parentFirstName, string parentLastName)
         {
-            return UsingDbContext(context =>
-                context
-                .Families
-                .First(f => f.Husband.FirstName == headOfFamilyFirstName && f.Husband.LastName == headOfFamilyLastName));
+            return UsingDbContext(context => context.Families.First
+            (
+                f => 
+                (f.Father.FirstName == parentFirstName && f.Father.LastName == parentLastName) ||
+                (f.Mother.FirstName == parentFirstName && f.Mother.LastName == parentLastName)
+            ));
         }
 
         protected int GenerateNotExistingPersonId()
@@ -356,22 +361,5 @@ namespace Foyer.Tests
                 return randomId;
             });
         }
-
-        //Tried to create generic methode that take a DbSet as parameter and count the number of entries for that entity.
-        //This methode does not work. To retry !
-
-        //protected int CountProcess<T>(Func<FoyerDbContext, DbSet<T>> selector) where T : DbSet
-        //{
-        //    return UsingDbContext(context =>
-        //    {
-        //        return selector(context).Count();
-        //    });
-        //}
-
-        //protected int CountPeople()
-        //{
-        //    return CountProcess(context => context.People);
-        //}
-
     }
 }

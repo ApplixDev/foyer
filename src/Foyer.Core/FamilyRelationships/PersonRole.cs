@@ -13,7 +13,7 @@
         Daugther = 6,
         Brother = 7,
         Sister = 8,
-        FatherWife = 9,
-        MotherHusband = 10
+        FathersWife = 9,
+        MothersHusband = 10
     }
 }

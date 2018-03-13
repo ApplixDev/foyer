@@ -193,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Families\Dto\AssignFamilyParentInput.cs" />
+    <Compile Include="Families\Dto\AssignFamilyParentsInput.cs" />
     <Compile Include="Families\Dto\CreateFamilyDto.cs" />
     <Compile Include="Families\Dto\DeleteFamilyInput.cs" />
     <Compile Include="Families\FamilyAppService.cs" />

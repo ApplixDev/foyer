@@ -13,10 +13,10 @@ namespace Foyer.Families.Dto
         public string FamilyName { get; set; }
 
         [Range(1, int.MaxValue)]
-        public int? HusbandId { get; set; }
+        public int? FatherId { get; set; }
 
         [Range(1, int.MaxValue)]
-        public int? WifeId { get; set; }
+        public int? MotherId { get; set; }
 
         public DateTime? WidingDate { get; set; }
 
@@ -29,9 +29,9 @@ namespace Foyer.Families.Dto
 
         public void AddValidationErrors(CustomValidationContext context)
         {
-            if (!(HusbandId.HasValue || WifeId.HasValue))
+            if (!(FatherId.HasValue || MotherId.HasValue))
             {
-                context.Results.Add(new ValidationResult("At least one of HusbandId or WifeId must be set!"));
+                context.Results.Add(new ValidationResult("At least one of parents must be set!"));
             }
         }
     }

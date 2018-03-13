@@ -2,12 +2,15 @@
 
 namespace Foyer.Families.Dto
 {
-    public class AssignFamilyParentInput
+    public class AssignFamilyParentsInput
     {
         [Range(1, int.MaxValue)]
         public int FamilyId { get; set; }
 
         [Range(1, int.MaxValue)]
-        public int ParentId { get; set; }
+        public int FatherId { get; set; }
+
+        [Range(1, int.MaxValue)]
+        public int MotherId { get; set; }
     }
 }

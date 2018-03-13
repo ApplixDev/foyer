@@ -9,7 +9,9 @@ namespace Foyer.Families.Dto
     {
         public string FamilyName { get; set; }
 
-        public int? HeadOfFamilyId { get; set; }
+        public int? FatherId { get; set; }
+
+        public int? MotherId { get; set; }
 
         public DateTime? WidingDate { get; set; }
 

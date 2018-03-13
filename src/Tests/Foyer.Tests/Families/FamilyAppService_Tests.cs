@@ -4,11 +4,7 @@ using Foyer.Families;
 using Foyer.Families.Dto;
 using Foyer.People;
 using Shouldly;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Foyer.Tests.Families
@@ -24,9 +20,43 @@ namespace Foyer.Tests.Families
         }
         #endregion
 
+        #region Create
+
+        [Fact]
+        public void Should_Create_New_Family()
+        {
+            var newHusband = UsingDbContext(Context => Context.People.Add(new Person
+            {
+                FirstName = "Lo",
+                LastName = "Celso",
+                Gender = Gender.Male
+            }));
+
+            var newFamily = UsingDbContext(Context => Context.Families.Add(new Family()));
+
+            _familyAppService.AssignFamilyFather(new AssignFamilyParentInput
+            {
+                ParentId = newHusband.Id,
+                FamilyId = newFamily.Id
+            });
+
+            UsingDbContext(context =>
+            {
+                var createdPerson = context.People.FirstOrDefault(p => p.Id == newHusband.Id);
+                createdPerson.ShouldNotBeNull();
+                createdPerson.FirstName.ShouldBe(newHusband.FirstName);
+
+                var createdFamily = context.Families.FirstOrDefault(f => f.Id == newFamily.Id);
+                createdFamily.ShouldNotBeNull();
+                createdFamily.FatherId.ShouldBe(createdPerson.Id);
+            });
+        }
+
+        #endregion
+
         #region AssignPersonHeadOfFamily tests
         [Fact]
-        public void Should_Assign_Person_Head_Of_Family()
+        public void Should_Assign_Person_As_Family_Father()
         {
             var newPerson = UsingDbContext(Context => Context.People.Add(new Person
             {
@@ -51,15 +81,15 @@ namespace Foyer.Tests.Families
 
                 var createdFamily = context.Families.FirstOrDefault(f => f.Id == newFamily.Id);
                 createdFamily.ShouldNotBeNull();
-                createdFamily.HusbandId.ShouldBe(createdPerson.Id);
+                createdFamily.FatherId.ShouldBe(createdPerson.Id);
             });
         }
 
         [Fact]
-        public void Should_Not_Throw_Exception_If_Assigned_Person_Is_Already_Head_Of_Family()
+        public void Should_Not_Throw_Exception_If_Assigned_Person_Is_Already_Family_Father()
         {
             var salahId = GetPerson("Mohamed", "Salah").Id;
-            var salahFamilyId = GetFamilyFromHeadOfFamilyId(salahId).Id;
+            var salahFamilyId = GetFamilyFromParentId(salahId).Id;
 
             Should.NotThrow(() => _familyAppService.AssignFamilyFather(new AssignFamilyParentInput
             {
@@ -69,12 +99,12 @@ namespace Foyer.Tests.Families
 
             UsingDbContext(context =>
             {
-                context.Families.FirstOrDefault(f => f.Id == salahFamilyId && f.HusbandId == salahId).ShouldNotBeNull();
+                context.Families.FirstOrDefault(f => f.Id == salahFamilyId && f.FatherId == salahId).ShouldNotBeNull();
             });
         }
 
         [Fact]
-        public void Should_Not_Assign_Person_Head_Of_Family_If_Person_Does_Not_Exist()
+        public void Should_Not_Assign_Not_Existing_Person_As_Family_Father()
         {
             var notExistingPersonId = GenerateNotExistingPersonId();
 
@@ -91,11 +121,28 @@ namespace Foyer.Tests.Families
         }
 
         [Fact]
-        public void Should_Throw_AbpValidationException_If_Person_Id_Is_Out_Of_Range()
+        public void Should_Not_Assign_Person_As_Family_Father_If_Family_Does_Not_Exist()
+        {
+            var notExistingFamilyId = GenerateNotExistingFamilyId();
+
+            var salahId = GetPerson("Mohamed", "Salah").Id;
+
+            Should.Throw<EntityNotFoundException>(() =>
+            {
+                _familyAppService.AssignFamilyFather(new AssignFamilyParentInput
+                {
+                    ParentId = salahId,
+                    FamilyId = notExistingFamilyId
+                });
+            });
+        }
+
+        [Fact]
+        public void Should_Throw_AbpValidationException_If_Father_Id_Is_Out_Of_Range()
         {
             var outOfRangePersonId = 0;
 
-            var salahFamilyId = GetFamilyFromHeadOfFamilyName("Mohamed", "Salah").Id;
+            var salahFamilyId = GetFamilyFromParentName("Mohamed", "Salah").Id;
 
             Should.Throw<AbpValidationException>(() =>
             {
@@ -108,18 +155,18 @@ namespace Foyer.Tests.Families
         }
 
         [Fact]
-        public void Should_Not_Assign_Person_Head_Of_Family_If_Family_Does_Not_Exist()
+        public void Should_Throw_AbpValidationException_If_Mother_Id_Is_Out_Of_Range()
         {
-            var notExistingFamilyId = GenerateNotExistingFamilyId();
+            var outOfRangePersonId = 0;
 
-            var salahId = GetPerson("Mohamed", "Salah").Id;
+            var salahFamilyId = GetFamilyFromParentName("Madame", "Salah").Id;
 
-            Should.Throw<EntityNotFoundException>(() =>
+            Should.Throw<AbpValidationException>(() =>
             {
-                _familyAppService.AssignFamilyFather(new AssignFamilyParentInput
+                _familyAppService.AssignFamilyMother(new AssignFamilyParentInput
                 {
-                    ParentId = salahId,
-                    FamilyId = notExistingFamilyId
+                    ParentId = outOfRangePersonId,
+                    FamilyId = salahFamilyId
                 });
             });
         }

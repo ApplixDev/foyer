@@ -1,28 +1,45 @@
 ﻿using Abp.Domain.Services;
+using Abp.UI;
 using Foyer.People;
 
 namespace Foyer.Families
 {
     public class FamilyManager : DomainService, IFamilyManager
     {
+        public void AssignFamilyParents(Family family, Person father, Person mother)
+        {
+            AssignFamilyFather(family, father);
+            AssignFamilyMother(family, mother);
+        }
+
         public void AssignFamilyFather(Family family, Person father)
         {
-            if (family.HusbandId == father.Id)
+            if (family.FatherId == father.Id)
             {
                 return;
             }
 
-            family.HusbandId = father.Id;
+            if (father.Gender != Gender.Male)
+            {
+                throw new UserFriendlyException("The family father must be a male");
+            }
+
+            family.FatherId = father.Id;
         }
 
         public void AssignFamilyMother(Family family, Person mother)
         {
-            if (family.WifeId == mother.Id)
+            if (family.MotherId == mother.Id)
             {
                 return;
             }
 
-            family.WifeId = mother.Id;
+            if (mother.Gender != Gender.Female)
+            {
+                throw new UserFriendlyException("The family mother must be a female");
+            }
+
+            family.MotherId = mother.Id;
         }
     }
 }

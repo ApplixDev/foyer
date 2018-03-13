@@ -44,10 +44,12 @@ namespace Foyer.Tests.People
             {
                 context.People.Count().ShouldBe(initialPeopleCount + 1);
 
-                var foundLoCelso = context.People.FirstOrDefault(
-                    p => p.FirstName == loCelso.FirstName &&
-                    p.LastName == loCelso.LastName &&
-                    p.BirthDate == loCelso.BirthDate
+                var foundLoCelso = context.People.FirstOrDefault
+                (
+                    p => p.FirstName == loCelso.FirstName
+                    && p.LastName == loCelso.LastName
+                    && p.Gender == loCelso.Gender
+                    && p.BirthDate == loCelso.BirthDate
                 );
 
                 foundLoCelso.ShouldNotBeNull();
@@ -57,22 +59,29 @@ namespace Foyer.Tests.People
         [Fact]
         public async Task Should_Create_New_Person_Async()
         {
-            //Act
-            await _personAppService.CreateAsync(
-                new CreatePersonDto
-                {
-                    FirstName = "John",
-                    LastName = "Nash",
-                    Gender = Gender.Male,
-                    BirthDate = new DateTime(1980, 2, 28),
-                    BirthPlace = "USA",
-                    OtherDetails = "Nothing"
-                });
+            var johnNash = new CreatePersonDto
+            {
+                FirstName = "John",
+                LastName = "Nash",
+                Gender = Gender.Male,
+                BirthDate = new DateTime(1980, 2, 28),
+                BirthPlace = "USA",
+                OtherDetails = "Nothing"
+            };
+
+            await _personAppService.CreateAsync(johnNash);
 
             await UsingDbContextAsync(async context =>
             {
-                var johnNash = await context.People.FirstOrDefaultAsync(p => p.FirstName == "John" && p.LastName == "Nash" && p.BirthDate == new DateTime(1980, 2, 28));
-                johnNash.ShouldNotBeNull();
+                var foundJohnNash = await context.People.FirstOrDefaultAsync
+                (
+                    p => p.FirstName == johnNash.FirstName
+                    && p.LastName == johnNash.LastName
+                    && p.Gender == johnNash.Gender
+                    && p.BirthDate == johnNash.BirthDate
+                );
+
+                foundJohnNash.ShouldNotBeNull();
             });
         }
 

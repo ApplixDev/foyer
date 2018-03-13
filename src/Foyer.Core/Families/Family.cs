@@ -15,21 +15,21 @@ namespace Foyer.Families
         public const int MaxFamilyNameLength = 32;
 
         /// <summary>
-        /// Husband or father.
+        /// Husband.
         /// </summary>
-        [ForeignKey(nameof(HusbandId))]
-        public virtual Person Husband { get; set; }
-        public virtual int? HusbandId { get; set; }
+        [ForeignKey(nameof(FatherId))]
+        public virtual Person Father { get; set; }
+        public virtual int? FatherId { get; set; }
 
         /// <summary>
-        /// Wife or mother.
+        /// Wife.
         /// </summary>
-        [ForeignKey(nameof(WifeId))]
-        public virtual Person Wife { get; set; }
-        public virtual int? WifeId { get; set; }
+        [ForeignKey(nameof(MotherId))]
+        public virtual Person Mother { get; set; }
+        public virtual int? MotherId { get; set; }
 
         /// <summary>
-        /// Family name.
+        /// Family name, can be used for family nickname or for shortened family name.
         /// </summary>
         [StringLength(AbpUserBase.MaxNameLength)]
         public virtual string FamilyName { get; set; }
