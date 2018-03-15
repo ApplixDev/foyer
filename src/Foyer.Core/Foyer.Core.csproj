@@ -189,9 +189,9 @@
     <Compile Include="Families\Family.cs" />
     <Compile Include="Families\FamilyManager.cs" />
     <Compile Include="Families\IFamilyManager.cs" />
-    <Compile Include="FamilyRelationships\FamilyMembersManager.cs" />
+    <Compile Include="FamilyRelationships\FamilyRelationshipsManager.cs" />
     <Compile Include="FamilyRelationships\FamilyRelationship.cs" />
-    <Compile Include="FamilyRelationships\IFamilyMembersManager.cs" />
+    <Compile Include="FamilyRelationships\IFamilyRelationshipsManager.cs" />
     <Compile Include="FamilyRelationships\PersonRole.cs" />
     <Compile Include="FamilyRelationships\RelationshipType.cs" />
     <Compile Include="FoyerConsts.cs" />

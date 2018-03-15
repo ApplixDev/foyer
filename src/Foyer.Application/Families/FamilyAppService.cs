@@ -6,6 +6,7 @@ using Abp.Domain.Repositories;
 using Abp.ObjectMapping;
 using Abp.UI;
 using Foyer.Families.Dto;
+using Foyer.FamilyRelationships;
 using Foyer.People;
 
 namespace Foyer.Families
@@ -14,17 +15,20 @@ namespace Foyer.Families
     {
         private readonly IRepository<Person> _personRepository;
         private readonly IRepository<Family> _familyRepository;
+        private readonly IRepository<FamilyRelationship> _familyRelationshipsRepository;
         private readonly IFamilyManager _familyManager;
         private readonly IObjectMapper _objectMapper;
 
         public FamilyAppService(
             IRepository<Person> personRepository,
             IRepository<Family> familyRepository,
+            IRepository<FamilyRelationship> familyRelationshipsRepository,
             IFamilyManager familyManager,
             IObjectMapper objectMapper)
         {
             _personRepository = personRepository;
             _familyRepository = familyRepository;
+            _familyRelationshipsRepository = familyRelationshipsRepository;
             _familyManager = familyManager;
             _objectMapper = objectMapper;
         }
@@ -35,27 +39,14 @@ namespace Foyer.Families
 
             var family = MapToEntity(inputFamily);
 
-            if (inputFamily.FatherId.HasValue && inputFamily.MotherId.HasValue)
-            {
-                //Should add new marriage relationship if not exist ?
-                //_familyRelationshipManager.AddRelationship
-            }
-
-            if (inputFamily.FatherId.HasValue)
-            {
-                var father = _personRepository.Get(inputFamily.FatherId.Value);
-                _familyManager.AssignFamilyFather(family, father);
-                //family.Father = father;//To test
-            }
-
-            if(inputFamily.MotherId.HasValue)
-            {
-                var mother = _personRepository.Get(inputFamily.MotherId.Value);
-                _familyManager.AssignFamilyMother(family, mother);
-                //family.Mother = mother;//To test
-            }
+            GetAndAssignFamilyParents(family);
 
             _familyRepository.Insert(family);
+
+            if (family.FatherId.HasValue && family.MotherId.HasValue)
+            {
+                AddMarriageRelationshipIfNotExist(family);
+            }
         }
 
         private void CheckIfFamilyExist(CreateFamilyDto inputFamily)
@@ -71,6 +62,48 @@ namespace Foyer.Families
             {
                 throw new UserFriendlyException("This family already exist");
             }
+        }
+
+        private void GetAndAssignFamilyParents(Family family)
+        {
+            if (family.FatherId.HasValue)
+            {
+                var father = _personRepository.Get(family.FatherId.Value);
+                _familyManager.AssignFamilyFather(family, father);
+                //family.Father = father;//To test or to move to FamilyManager
+            }
+
+            if (family.MotherId.HasValue)
+            {
+                var mother = _personRepository.Get(family.MotherId.Value);
+                _familyManager.AssignFamilyMother(family, mother);
+                //family.Mother = mother;//To test or to move to FamilyManager
+            }
+        }
+
+        private void AddMarriageRelationshipIfNotExist(Family family)
+        {
+            var relationship = _familyRelationshipsRepository.FirstOrDefault
+            (
+                r => r.PersonId == family.FatherId
+                && r.RelatedPersonId == family.MotherId
+                && r.RelationshipType == RelationshipType.Married
+            );
+
+            if (relationship != null)
+            {
+                return;
+            }
+
+            _familyRelationshipsRepository.Insert(new FamilyRelationship
+            {
+                RelationshipType = RelationshipType.Married,
+                FamilyId = family.Id,
+                PersonId = family.FatherId.Value,
+                PersonRole = PersonRole.Husband,
+                RelatedPersonId = family.MotherId.Value,
+                RelatedPersonRole = PersonRole.Wife
+            });
         }
 
         public void Update(UpdateFamilyDto input)

@@ -202,6 +202,8 @@
     <Compile Include="Families\Dto\GetFamilyInput.cs" />
     <Compile Include="Families\IFamilyAppService.cs" />
     <Compile Include="Families\Dto\UpdateFamilyDto.cs" />
+    <Compile Include="FamilyRelationships\FamilyRelationshipsAppService.cs" />
+    <Compile Include="FamilyRelationships\IFamilyRelationshipsAppService.cs" />
     <Compile Include="FoyerApplicationModule.cs" />
     <Compile Include="FoyerAppServiceBase.cs" />
     <Compile Include="Authorization\Accounts\AccountAppService.cs" />

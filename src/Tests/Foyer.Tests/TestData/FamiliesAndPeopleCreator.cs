@@ -95,7 +95,7 @@ namespace Foyer.Tests.TestData
                 RelatedPersonId = wife.Id,
                 PersonRole = PersonRole.Husband,
                 RelatedPersonRole = PersonRole.Wife,
-                RelationshipType = RelationshipType.Maried
+                RelationshipType = RelationshipType.Married
             };
 
             _context.FamilyRelationships.AddOrUpdate(r => new { r.PersonId, r.RelatedPersonId }, relationship);
