@@ -9,7 +9,7 @@ namespace Foyer.FamilyRelationships
     public enum RelationshipType : byte
     {
         Married = 1,
-        Separated = 2,
+        Divorced = 2,
         ParentChild = 3,
         BrotherSister = 4
     }

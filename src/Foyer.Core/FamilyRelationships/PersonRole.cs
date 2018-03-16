@@ -14,6 +14,8 @@
         Brother = 7,
         Sister = 8,
         FathersWife = 9,
-        MothersHusband = 10
+        MothersHusband = 10,
+        ExHusband = 11,
+        ExWife = 12,
     }
 }
