@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
 using Abp.ObjectMapping;
 using Abp.UI;
 using Foyer.Families.Dto;
@@ -18,38 +19,38 @@ namespace Foyer.Families
         private readonly IRepository<FamilyRelationship> _familyRelationshipsRepository;
         private readonly IFamilyManager _familyManager;
         private readonly IObjectMapper _objectMapper;
+        private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public FamilyAppService(
             IRepository<Person> personRepository,
             IRepository<Family> familyRepository,
             IRepository<FamilyRelationship> familyRelationshipsRepository,
             IFamilyManager familyManager,
-            IObjectMapper objectMapper)
+            IObjectMapper objectMapper,
+            IUnitOfWorkManager unitOfWorkManager)
         {
             _personRepository = personRepository;
             _familyRepository = familyRepository;
             _familyRelationshipsRepository = familyRelationshipsRepository;
             _familyManager = familyManager;
             _objectMapper = objectMapper;
+            _unitOfWorkManager = unitOfWorkManager;
         }
 
         public void Create(CreateFamilyDto inputFamily)
         {
-            CheckIfFamilyExist(inputFamily);
+            ThrowExceptionIfFamilyExist(inputFamily);
 
             var family = MapToEntity(inputFamily);
 
             GetAndAssignFamilyParents(family);
 
-            _familyRepository.Insert(family);
+            _familyRepository.Insert(family);//Test if after this instruction the family.Id is auto assigned from db
 
-            if (family.FatherId.HasValue && family.MotherId.HasValue)
-            {
-                AddMarriageRelationshipIfNotExist(family);
-            }
+            AddOrUpdateParentsRelationship(family, true);//Is it needed ?
         }
 
-        private void CheckIfFamilyExist(CreateFamilyDto inputFamily)
+        private void ThrowExceptionIfFamilyExist(CreateFamilyDto inputFamily)
         {
             var familyExist = _familyRepository.GetAll()
                 .WhereIf(inputFamily.FatherId.HasValue, f => f.FatherId == inputFamily.FatherId)
@@ -81,34 +82,48 @@ namespace Foyer.Families
             }
         }
 
-        private void AddMarriageRelationshipIfNotExist(Family family)
+        private void AddOrUpdateParentsRelationship(Family family, bool married)
         {
-            var relationship = _familyRelationshipsRepository.FirstOrDefault
-            (
-                r => r.PersonId == family.FatherId
-                && r.RelatedPersonId == family.MotherId
-                && r.RelationshipType == RelationshipType.Married
-            );
-
-            if (relationship != null)
+            //Both parents should be defined in order to add or update a relationship
+            if (!(family.FatherId.HasValue && family.MotherId.HasValue))
             {
                 return;
             }
 
-            _familyRelationshipsRepository.Insert(new FamilyRelationship
+            var parentsRelationshipType = married ? RelationshipType.Married : RelationshipType.Divorced;
+
+            //Look for existing relationship even if deleted, should i do that ?
+            using (_unitOfWorkManager.Current.DisableFilter(AbpDataFilters.SoftDelete))
             {
-                RelationshipType = RelationshipType.Married,
-                FamilyId = family.Id,
-                PersonId = family.FatherId.Value,
-                PersonRole = PersonRole.Husband,
-                RelatedPersonId = family.MotherId.Value,
-                RelatedPersonRole = PersonRole.Wife
-            });
+                var relationship = _familyRelationshipsRepository.GetAll()
+                .Where(r => r.PersonId == family.FatherId && r.RelatedPersonId == family.MotherId)
+                .Where(r => r.RelationshipType == RelationshipType.Married || r.RelationshipType == RelationshipType.Divorced)
+                .FirstOrDefault();
+
+                if (relationship == null)
+                {
+                    _familyRelationshipsRepository.Insert(new FamilyRelationship
+                    {
+                        RelationshipType = parentsRelationshipType,
+                        FamilyId = family.Id,
+                        PersonId = family.FatherId.Value,
+                        PersonRole = PersonRole.Husband,
+                        RelatedPersonId = family.MotherId.Value,
+                        RelatedPersonRole = PersonRole.Wife
+                    });
+                }
+                else
+                {
+                    relationship.RelationshipType = parentsRelationshipType;
+                    relationship.FamilyId = family.Id;
+                    relationship.IsDeleted = false;
+                }
+            }
         }
 
         public void Update(UpdateFamilyDto input)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void Delete(DeleteFamilyInput input)
