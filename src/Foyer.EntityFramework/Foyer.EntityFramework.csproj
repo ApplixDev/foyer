@@ -259,6 +259,10 @@
     <Compile Include="Migrations\201803111451586_Update_Family_Husband_Wife_To_Father_Mother.Designer.cs">
       <DependentUpon>201803111451586_Update_Family_Husband_Wife_To_Father_Mother.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803211703484_Update_Family_ForeignKeys_Names.cs" />
+    <Compile Include="Migrations\201803211703484_Update_Family_ForeignKeys_Names.Designer.cs">
+      <DependentUpon>201803211703484_Update_Family_ForeignKeys_Names.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AbpZeroDbMigrator.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="FoyerDataModule.cs" />
@@ -320,6 +324,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803111451586_Update_Family_Husband_Wife_To_Father_Mother.resx">
       <DependentUpon>201803111451586_Update_Family_Husband_Wife_To_Father_Mother.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803211703484_Update_Family_ForeignKeys_Names.resx">
+      <DependentUpon>201803211703484_Update_Family_ForeignKeys_Names.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
