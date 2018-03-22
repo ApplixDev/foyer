@@ -24,8 +24,9 @@ namespace Foyer
             Configuration.Modules.Zero().EntityTypes.Role = typeof(Role);
             Configuration.Modules.Zero().EntityTypes.User = typeof(User);
 
-            //Remove the following line to disable multi-tenancy.
             Configuration.MultiTenancy.IsEnabled = FoyerConsts.MultiTenancyEnabled;
+
+            Configuration.BackgroundJobs.IsJobExecutionEnabled = false;
 
             //Add/remove localization sources here
             Configuration.Localization.Sources.Add(

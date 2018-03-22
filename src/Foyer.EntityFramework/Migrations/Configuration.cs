@@ -28,6 +28,9 @@ namespace Foyer.Migrations
                 //Default tenant seed (in host database).
                 new DefaultTenantCreator(context).Create();
                 new TenantRoleAndUserBuilder(context, 1).Create();
+
+                //Used for manual tests
+                new FamiliesAndPeopleCreator(context).Create();
             }
             else
             {
