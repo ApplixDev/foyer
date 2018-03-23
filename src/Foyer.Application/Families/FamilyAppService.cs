@@ -39,27 +39,21 @@ namespace Foyer.Families
 
         public void Create(CreateFamilyDto inputFamily)
         {
-            ThrowExceptionIfFamilyExist(inputFamily);
+            ThrowExceptionIfFamilyExists(inputFamily.FatherId, inputFamily.MotherId);
 
             var family = MapToEntity(inputFamily);
 
             GetAndAssignFamilyParents(family);
 
-            _familyRepository.Insert(family);//Test if after this instruction the family.Id is auto assigned from db
-
-            AddOrUpdateParentsRelationship(family, true);//Is it needed ?
+            _familyRepository.Insert(family);
         }
 
-        private void ThrowExceptionIfFamilyExist(CreateFamilyDto inputFamily)
+        private void ThrowExceptionIfFamilyExists(int? fatherId, int? motherId)
         {
-            var familyExist = _familyRepository.GetAll()
-                .WhereIf(inputFamily.FatherId.HasValue, f => f.FatherId == inputFamily.FatherId)
-                .WhereIf(!inputFamily.FatherId.HasValue, f => f.FatherId == null)
-                .WhereIf(inputFamily.MotherId.HasValue, f => f.MotherId == inputFamily.MotherId)
-                .WhereIf(!inputFamily.MotherId.HasValue, f => f.MotherId == null)
-                .Any();
+            var familyExists = _familyRepository.GetAll()
+                .Any(f => f.FatherId == fatherId && f.MotherId == motherId);
 
-            if (familyExist)
+            if (familyExists)
             {
                 throw new UserFriendlyException("This family already exist");
             }
@@ -79,45 +73,6 @@ namespace Foyer.Families
                 var mother = _personRepository.Get(family.MotherId.Value);
                 _familyManager.AssignFamilyMother(family, mother);
                 //family.Mother = mother;//To test or to move to FamilyManager
-            }
-        }
-
-        private void AddOrUpdateParentsRelationship(Family family, bool married)
-        {
-            //Both parents should be defined in order to add or update a relationship
-            if (!(family.FatherId.HasValue && family.MotherId.HasValue))
-            {
-                return;
-            }
-
-            var parentsRelationshipType = married ? RelationshipType.Married : RelationshipType.Divorced;
-
-            //Look for existing relationship even if deleted, should i do that ?
-            using (_unitOfWorkManager.Current.DisableFilter(AbpDataFilters.SoftDelete))
-            {
-                var relationship = _familyRelationshipsRepository.GetAll()
-                .Where(r => r.PersonId == family.FatherId && r.RelatedPersonId == family.MotherId)
-                .Where(r => r.RelationshipType == RelationshipType.Married || r.RelationshipType == RelationshipType.Divorced)
-                .FirstOrDefault();
-
-                if (relationship == null)
-                {
-                    _familyRelationshipsRepository.Insert(new FamilyRelationship
-                    {
-                        RelationshipType = parentsRelationshipType,
-                        FamilyId = family.Id,
-                        PersonId = family.FatherId.Value,
-                        PersonRole = PersonRole.Husband,
-                        RelatedPersonId = family.MotherId.Value,
-                        RelatedPersonRole = PersonRole.Wife
-                    });
-                }
-                else
-                {
-                    relationship.RelationshipType = parentsRelationshipType;
-                    relationship.FamilyId = family.Id;
-                    relationship.IsDeleted = false;
-                }
             }
         }
 

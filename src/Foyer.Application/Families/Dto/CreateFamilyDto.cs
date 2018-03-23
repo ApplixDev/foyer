@@ -31,7 +31,7 @@ namespace Foyer.Families.Dto
         {
             if (!(FatherId.HasValue || MotherId.HasValue))
             {
-                context.Results.Add(new ValidationResult("At least one of parents must be set!"));
+                context.Results.Add(new ValidationResult("At least one of the parents must be set!"));
             }
         }
     }

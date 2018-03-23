@@ -26,8 +26,7 @@ namespace Foyer.Web.Controllers
         public void Index()
         {
             var familyExist = _familyRepository.GetAll()
-                .Where(f => f.FatherId == family.FatherId && f.MotherId == family.MotherId)
-                .Any();
+                .Any(f => f.FatherId == family.FatherId && f.MotherId == family.MotherId);
         }
     }
 }
