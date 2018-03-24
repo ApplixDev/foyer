@@ -39,24 +39,16 @@ namespace Foyer.Families
 
         public void Create(CreateFamilyDto inputFamily)
         {
-            ThrowExceptionIfFamilyExists(inputFamily.FatherId, inputFamily.MotherId);
-
             var family = MapToEntity(inputFamily);
+
+            if (_familyManager.FamilyExists(family))
+            {
+                throw new UserFriendlyException("This family already exist");
+            }
 
             GetAndAssignFamilyParents(family);
 
             _familyRepository.Insert(family);
-        }
-
-        private void ThrowExceptionIfFamilyExists(int? fatherId, int? motherId)
-        {
-            var familyExists = _familyRepository.GetAll()
-                .Any(f => f.FatherId == fatherId && f.MotherId == motherId);
-
-            if (familyExists)
-            {
-                throw new UserFriendlyException("This family already exist");
-            }
         }
 
         private void GetAndAssignFamilyParents(Family family)
@@ -65,20 +57,18 @@ namespace Foyer.Families
             {
                 var father = _personRepository.Get(family.FatherId.Value);
                 _familyManager.AssignFamilyFather(family, father);
-                //family.Father = father;//To test or to move to FamilyManager
             }
 
             if (family.MotherId.HasValue)
             {
                 var mother = _personRepository.Get(family.MotherId.Value);
                 _familyManager.AssignFamilyMother(family, mother);
-                //family.Mother = mother;//To test or to move to FamilyManager
             }
         }
 
         public void Update(UpdateFamilyDto input)
         {
-            
+            throw new NotImplementedException();
         }
 
         public void Delete(DeleteFamilyInput input)

@@ -13,41 +13,38 @@ namespace Foyer.People
     public class PersonAppService : IPersonAppService
     {
         private IRepository<Person> _personRepository;
+        private IPersonManager _personManager;
         private IObjectMapper _objectMapper;
 
-        public PersonAppService(IRepository<Person> personRepository, IObjectMapper objectMapper)
+        public PersonAppService(IRepository<Person> personRepository, IPersonManager personManager, IObjectMapper objectMapper)
         {
             _personRepository = personRepository;
+            _personManager = personManager;
             _objectMapper = objectMapper;
         }
 
         public void Create(CreatePersonDto input)
         {
-            CheckIfInputPersonExist(input);
             var person = MapToEntity(input);
+
+            if (_personManager.PersonExists(person))
+            {
+                throw new UserFriendlyException("This Person already exist");
+            }
+
             _personRepository.Insert(person);
         }
 
         public async Task CreateAsync(CreatePersonDto input)
         {
-            CheckIfInputPersonExist(input);
             var person = MapToEntity(input);
-            await _personRepository.InsertAsync(person);
-        }
 
-        private void CheckIfInputPersonExist(CreatePersonDto input)
-        {
-            var person = _personRepository.FirstOrDefault
-            (
-                p => p.FirstName == input.FirstName &&
-                p.LastName == input.LastName &&
-                p.BirthDate == input.BirthDate
-            );
-
-            if (person != null)
+            if (_personManager.PersonExists(person))
             {
                 throw new UserFriendlyException("This Person already exist");
             }
+
+            await _personRepository.InsertAsync(person);
         }
 
         public void Update(UpdatePersonDto input)
