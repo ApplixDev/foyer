@@ -29,13 +29,13 @@ namespace Foyer.Families
 
             }
 
-            if (family.FatherId == father.Id)//if (family.Father == father) //To search
+            if (family.FatherId == father.Id)//if (family.Father == father) //To search and test
             {
                 return;
             }
 
             family.FatherId = father.Id;
-            //family.Father = father;//To test
+            //family.Father = father;
         }
 
         public void AssignFamilyMother(Family family, Person mother)
@@ -45,22 +45,16 @@ namespace Foyer.Families
                 throw new UserFriendlyException("The family mother must be a female");
             }
 
-            if (family.MotherId == mother.Id)//if (family.Mother == mother) //To search
+            if (family.MotherId == mother.Id)//if (family.Mother == mother) //To search and test
             {
                 return;
             }
 
             family.MotherId = mother.Id;
-            //family.Mother = mother;//To test or to move to FamilyManager
+            //family.Mother = mother;
         }
 
-        /// <summary>
-        /// Check if family exists.
-        /// Both or one of parents ids are used to find matching family.
-        /// </summary>
-        /// <param name="family"></param>
-        /// <returns>Returns true if any family was found </returns>
-        public bool FamilyExists(Family family)
+        public bool ParentsFamilyExists(Family family)
         {
             return _familyRepository.GetAll().Any
             (

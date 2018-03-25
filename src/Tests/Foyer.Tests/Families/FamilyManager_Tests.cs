@@ -4,22 +4,27 @@ using Xunit;
 using Shouldly;
 using Abp.UI;
 using NSubstitute;
+using Abp.Domain.Repositories;
 
 namespace Foyer.Tests.Families
 {
     public class FamilyManager_Tests : FoyerTestBase
     {
+        private readonly IRepository<Family> _familyRepository;
         private readonly IFamilyManager _familyManager;
 
         public FamilyManager_Tests()
         {
+            _familyRepository = Resolve<IRepository<Family>>();
+
             //Partial substitutes allow us to create an object that acts like a real instance of a class,
             //and selectively substitute for specific parts of that object.
             //This is useful for when we need a substitute to have real behaviour except for a single method
             //that we want to replace, or when we just want to spy on what calls are being made.
-            _familyManager = Substitute.ForPartsOf<FamilyManager>();
+            _familyManager = Substitute.ForPartsOf<FamilyManager>(_familyRepository);
         }
 
+        #region Assign family parents tests
         [Fact]
         public void Should_Assign_Person_As_Family_Father()
         {
@@ -34,7 +39,7 @@ namespace Foyer.Tests.Families
         [Fact]
         public void Should_Not_Throw_Exception_If_Person_Is_Already_Assigned_Family_Father()
         {
-            var men = new Person { Id = 1 , Gender = Gender.Male };
+            var men = new Person { Id = 1, Gender = Gender.Male };
             var family = new Family { Id = 1, FatherId = men.Id };
 
             Should.NotThrow(() => _familyManager.AssignFamilyFather(family, men));
@@ -97,5 +102,16 @@ namespace Foyer.Tests.Families
             _familyManager.Received().AssignFamilyFather(family, father);
             _familyManager.Received().AssignFamilyMother(family, mother);
         }
+        #endregion
+
+        #region Family exists tests
+        [Fact]
+        public void Should_Return_True_If_Family_With_Defined_Parents_Ids_Exists()
+        {
+            var salahFamily = GetFamilyFromParentName("Mohamed", "Salah");
+
+            UsingDbContext((context) => _familyManager.ParentsFamilyExists(salahFamily).ShouldBeTrue());
+        }
+        #endregion
     }
 }

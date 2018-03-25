@@ -10,7 +10,7 @@ namespace Foyer.People
 {
     public class PersonManager : DomainService, IPersonManager
     {
-        private IRepository<Person> _personRepository;
+        private readonly IRepository<Person> _personRepository;
 
         public PersonManager(IRepository<Person> personRepository)
         {

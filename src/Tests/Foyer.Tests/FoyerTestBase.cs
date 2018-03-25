@@ -38,7 +38,7 @@ namespace Foyer.Tests
             {
                 new InitialHostDbBuilder(context).Create();
                 new DefaultTenantCreator(context).Create();
-                new FamiliesAndPeopleCreator(context).Create();
+                new TestData.FamiliesAndPeopleCreator(context).Create();
             });
 
             //Seed initial data for default tenant
@@ -300,10 +300,10 @@ namespace Foyer.Tests
         }
 
         /// <summary>
-        /// 
+        /// Returns null if no person was found.
         /// </summary>
         /// <param name="personId">Person Id</param>
-        /// <returns>Returns null if no person was found.</returns>
+        /// <returns></returns>
         protected Person GetPerson(int personId)
         {
             return UsingDbContext(context => context.People.FirstOrDefault(p => p.Id == personId));

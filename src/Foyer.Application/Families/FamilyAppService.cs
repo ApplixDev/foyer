@@ -41,7 +41,7 @@ namespace Foyer.Families
         {
             var family = MapToEntity(inputFamily);
 
-            if (_familyManager.FamilyExists(family))
+            if (_familyManager.ParentsFamilyExists(family))
             {
                 throw new UserFriendlyException("This family already exist");
             }
