@@ -336,8 +336,7 @@ namespace Foyer.Tests
         {
             return UsingDbContext(context =>
             {
-                var randomId = context.People.Count() + 1;
-                randomId.ShouldBeInRange(1, int.MaxValue);
+                var randomId = GenerateRandomInt(context.People.Count() + 1);
 
                 context.People.FirstOrDefault(p => p.Id == randomId)
                     .ShouldBeNull(@"We should not find a person with the generated Id.
@@ -351,8 +350,7 @@ namespace Foyer.Tests
         {
             return UsingDbContext(context =>
             {
-                var randomId = context.Families.Count() + 1;
-                randomId.ShouldBeInRange(1, int.MaxValue);
+                var randomId = GenerateRandomInt(context.Families.Count() + 1);
 
                 context.Families.FirstOrDefault(f => f.Id == randomId)
                     .ShouldBeNull(@"We should not find a family with the generated Id.
@@ -360,6 +358,12 @@ namespace Foyer.Tests
 
                 return randomId;
             });
+        }
+
+        private int GenerateRandomInt(int minValue = int.MinValue, int maxValue = int.MaxValue)
+        {
+            Random random = new Random();
+            return random.Next(minValue, maxValue);
         }
     }
 }

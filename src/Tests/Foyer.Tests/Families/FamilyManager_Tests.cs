@@ -5,6 +5,8 @@ using Shouldly;
 using Abp.UI;
 using NSubstitute;
 using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
+using Abp.Dependency;
 
 namespace Foyer.Tests.Families
 {
@@ -108,9 +110,20 @@ namespace Foyer.Tests.Families
         [Fact]
         public void Should_Return_True_If_Family_With_Defined_Parents_Ids_Exists()
         {
-            var salahFamily = GetFamilyFromParentName("Mohamed", "Salah");
+            var family = GetFamilyFromParentId(1);
+            WithUnitOfWork(() => _familyManager.ParentsFamilyExists(family).ShouldBeTrue());
+        }
 
-            UsingDbContext((context) => _familyManager.ParentsFamilyExists(salahFamily).ShouldBeTrue());
+        [Fact]
+        public void Should_Return_False_If_Family_With_Defined_Parents_Ids_Do_Not_Exists()
+        {
+            var family = new Family
+            {
+                FatherId = GenerateNotExistingPersonId(),
+                MotherId = GenerateNotExistingPersonId()
+            };
+
+            WithUnitOfWork(() => _familyManager.ParentsFamilyExists(family).ShouldBeTrue());
         }
         #endregion
     }
