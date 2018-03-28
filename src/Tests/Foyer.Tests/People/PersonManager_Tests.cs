@@ -15,48 +15,51 @@ namespace Foyer.Tests.People
         }
 
         [Fact]
-        public void Should_Return_False_If_Person_Does_Not_Exists()
+        public void Should_Return_True_If_Any_Person_With_Given_FullName_And_Birthdate_Exists()
         {
-            _personManager.PersonExists(new Person()).ShouldBeFalse();
+            var existingPerson = GetPersonById(1);
+
+            WithUnitOfWork(() => _personManager.PersonExists(existingPerson).ShouldBeTrue());
         }
 
         [Fact]
-        public void Should_Return_False_If_No_Person_With_Given_FullName_And_Birthdate_Exists()
+        public void Should_Return_False_If_Person_Does_Not_Exists()
         {
-            var salah = GetPerson("Mohamed", "Salah");
+            WithUnitOfWork(() => _personManager.PersonExists(new Person()).ShouldBeFalse());
+        }
 
-            var PersonFirstNameNotMatch = new Person
+        [Fact]
+        public void Should_Return_False_If_No_Person_With_Given_Personal_Informations_Exists()
+        {
+            var existingPerson = GetPersonById(1);
+
+            var PersonFirstNameDoNotMatch = new Person
             {
                 FirstName = "No",
-                LastName = salah.LastName,
-                BirthDate = salah.BirthDate
+                LastName = existingPerson.LastName,
+                BirthDate = existingPerson.BirthDate
             };
 
-            var PersonLastNameNotMatch = new Person
+            var PersonLastNameDoNotMatch = new Person
             {
-                FirstName = salah.FirstName,
+                FirstName = existingPerson.FirstName,
                 LastName = "No",
-                BirthDate = salah.BirthDate
+                BirthDate = existingPerson.BirthDate
             };
 
-            var PersonBirthdateNotMatch = new Person
+            var PersonBirthdateDoNotMatch = new Person
             {
-                FirstName = salah.FirstName,
-                LastName = salah.LastName,
+                FirstName = existingPerson.FirstName,
+                LastName = existingPerson.LastName,
                 BirthDate = DateTime.Now
             };
 
-            _personManager.PersonExists(PersonFirstNameNotMatch).ShouldBeFalse();
-            _personManager.PersonExists(PersonLastNameNotMatch).ShouldBeFalse();
-            _personManager.PersonExists(PersonBirthdateNotMatch).ShouldBeFalse();
-        }
-
-        [Fact]
-        public void Should_Return_True_If_Any_Person_With_Given_FullName_And_Birthdate_Exists()
-        {
-            var salah = GetPerson("Mohamed", "Salah");
-
-            _personManager.PersonExists(salah).ShouldBeTrue();
+            WithUnitOfWork(() =>
+            {
+                _personManager.PersonExists(PersonFirstNameDoNotMatch).ShouldBeFalse();
+                _personManager.PersonExists(PersonLastNameDoNotMatch).ShouldBeFalse();
+                _personManager.PersonExists(PersonBirthdateDoNotMatch).ShouldBeFalse();
+            });
         }
     }
 }

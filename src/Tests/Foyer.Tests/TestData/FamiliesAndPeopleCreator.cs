@@ -2,6 +2,7 @@
 using Foyer.Families;
 using Foyer.FamilyRelationships;
 using Foyer.People;
+using Foyer.Tests.Utilities;
 using System;
 using System.Data.Entity.Migrations;
 
@@ -33,6 +34,14 @@ namespace Foyer.Tests.TestData
 
             var dembele = AddOrUpdatePerson("Ousmane", "Dembélé", Gender.Male, new DateTime(1997, 5, 15), "France");
             var dembeleWife = AddOrUpdatePerson("Madame", "Dembélé", Gender.Male, new DateTime(1997, 5, 15), "France");
+
+            //Add single man and women,
+            //to make identification of single people easier we put unmmaried in OtherDetails property 
+            var singleMan = AddOrUpdatePerson("Single", "Man", Gender.Male, new DateTime(1992, 1, 1), "France");
+            singleMan.OtherDetails = MaritalStatus.Unmarried;
+
+            var singleWoman = AddOrUpdatePerson("Single", "Women", Gender.Female, new DateTime(1997, 1, 1), "France");
+            singleWoman.OtherDetails = MaritalStatus.Unmarried;
 
             //Add soft deleted person
             var zidane = AddOrUpdatePerson("Zindine", "Zidane", Gender.Male, new DateTime(1972, 6, 23), "Marseille", isDeleted: true);

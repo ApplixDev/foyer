@@ -33,7 +33,7 @@ namespace Foyer.Families.Dto
             {
                 context.Results.Add(new ValidationResult("At least one of the parents must be set!"));
             }
-            else if (FatherId.HasValue && MotherId.HasValue && FatherId.Value == MotherId.Value)
+            else if (FatherId == MotherId)
             {
                 context.Results.Add(new ValidationResult("The same person can not be the father and mother at the same time"));
             }

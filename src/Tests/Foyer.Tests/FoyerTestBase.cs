@@ -20,6 +20,7 @@ using Foyer.Tests.TestData;
 using Foyer.People;
 using Foyer.Families;
 using Shouldly;
+using Foyer.Tests.Utilities;
 
 namespace Foyer.Tests
 {
@@ -300,18 +301,33 @@ namespace Foyer.Tests
         }
 
         /// <summary>
-        /// Returns null if no person was found.
+        /// Find person from test data seed.
         /// </summary>
         /// <param name="personId">Person Id</param>
         /// <returns></returns>
-        protected Person GetPerson(int personId)
+        protected Person GetPersonById(int personId)
         {
-            return UsingDbContext(context => context.People.FirstOrDefault(p => p.Id == personId));
+            return UsingDbContext(context => context.People.First(p => p.Id == personId));
         }
 
-        protected Person GetPerson(string firstName, string lastName)
+        /// <summary>
+        /// Uses OtherDetails property of person to check if he is single or not.
+        /// </summary>
+        /// <returns></returns>
+        protected Person GetUnmarriedMan()
         {
-            return UsingDbContext(context => context.People.Single(p => p.FirstName == firstName && p.LastName == lastName));
+            return UsingDbContext(context =>
+            context.People.First(p => p.Gender == Gender.Male && p.OtherDetails == MaritalStatus.Unmarried));
+        }
+
+        /// <summary>
+        /// Uses OtherDetails property of person to check if she is single or not.
+        /// </summary>
+        /// <returns></returns>
+        protected Person GetUnmarriedWomen()
+        {
+            return UsingDbContext(context =>
+            context.People.First(p => p.Gender == Gender.Female && p.OtherDetails == MaritalStatus.Unmarried));
         }
 
         protected Family GetFamilyFromParentId(int parentId)

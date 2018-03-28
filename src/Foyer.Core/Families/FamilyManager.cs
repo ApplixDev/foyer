@@ -26,7 +26,6 @@ namespace Foyer.Families
             if (father.Gender != Gender.Male)
             {
                 throw new UserFriendlyException("The family father must be a male");
-
             }
 
             if (family.FatherId == father.Id)//if (family.Father == father) //To search and test

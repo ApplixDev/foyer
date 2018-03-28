@@ -126,11 +126,11 @@ namespace Foyer.Tests.People
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            var OversizedFirstName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
+            var oversizedFirstName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
 
             var personWithOversizedFirstNameLength = new CreatePersonDto
             {
-                FirstName = OversizedFirstName,
+                FirstName = oversizedFirstName,
                 LastName = "Doe",
                 Gender = Gender.Male,
                 BirthDate = new DateTime(1992, 6, 15),
@@ -165,12 +165,12 @@ namespace Foyer.Tests.People
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            var OversizedLastName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
+            var oversizedLastName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
 
             var personWithOversizedLastNameLength = new CreatePersonDto
             {
                 FirstName = "John",
-                LastName = OversizedLastName,
+                LastName = oversizedLastName,
                 Gender = Gender.Male,
                 BirthDate = new DateTime(1992, 6, 15),
                 BirthPlace = "USA",
@@ -207,7 +207,7 @@ namespace Foyer.Tests.People
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            var OversizedDetails = Strings.GenerateRandomString(Person.MaxDetailsLength + 1);
+            var oversizedDetails = Strings.GenerateRandomString(Person.MaxDetailsLength + 1);
 
             var personWithOversizedDetailsLength = new CreatePersonDto
             {
@@ -216,7 +216,7 @@ namespace Foyer.Tests.People
                 Gender = Gender.Male,
                 BirthDate = new DateTime(1992, 6, 15),
                 BirthPlace = "USA",
-                OtherDetails = OversizedDetails
+                OtherDetails = oversizedDetails
             };
             Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithOversizedDetailsLength));
 
@@ -228,7 +228,7 @@ namespace Foyer.Tests.People
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
 
-            var OversizedBirthPlace = Strings.GenerateRandomString(Person.MaxBirthPlaceNameLength + 1);
+            var oversizedBirthPlace = Strings.GenerateRandomString(Person.MaxBirthPlaceNameLength + 1);
 
             var personWithOversizedBirthPlaceLength = new CreatePersonDto
             {
@@ -236,7 +236,7 @@ namespace Foyer.Tests.People
                 LastName = "Doe",
                 Gender = Gender.Male,
                 BirthDate = new DateTime(1992, 6, 15),
-                BirthPlace = OversizedBirthPlace
+                BirthPlace = oversizedBirthPlace
             };
             Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithOversizedBirthPlaceLength));
 
@@ -248,29 +248,29 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Update_Person()
         {
-            var salah = GetPerson("Mohamed", "Salah");
-            var updatedSalah = new UpdatePersonDto
+            var existingPersonId = 1;
+
+            var updatePerson = new UpdatePersonDto
             {
-                PersonId = salah.Id,
-                FirstName = "Mohammed",
-                LastName = "Sallah",
-                Gender = salah.Gender,
-                BirthDate = new DateTime(1987, 1, 1)
+                PersonId = existingPersonId,
+                FirstName = "NewName",
+                LastName = "NewName",
+                Gender = Gender.Female,
+                BirthDate = new DateTime(2000, 1, 1)
             };
 
-            _personAppService.Update(updatedSalah);
+            _personAppService.Update(updatePerson);
 
             UsingDbContext(context =>
             {
-                var foundSalah = context.People.Single(p => p.Id == salah.Id);
+                var existingPerson = context.People.Single(p => p.Id == existingPersonId);
 
-                foundSalah.ShouldNotBeNull();
-                foundSalah.FirstName.ShouldBe(updatedSalah.FirstName);
-                foundSalah.LastName.ShouldBe(updatedSalah.LastName);
-                foundSalah.BirthDate.ShouldBe(updatedSalah.BirthDate);
-                foundSalah.Gender.ShouldBe(updatedSalah.Gender);
+                existingPerson.FirstName.ShouldBe(updatePerson.FirstName);
+                existingPerson.LastName.ShouldBe(updatePerson.LastName);
+                existingPerson.BirthDate.ShouldBe(updatePerson.BirthDate);
+                existingPerson.Gender.ShouldBe(updatePerson.Gender);
 
-                foundSalah.IsDeleted.ShouldBe(updatedSalah.IsDeleted);
+                existingPerson.IsDeleted.ShouldBe(updatePerson.IsDeleted);
             });
         }
 
@@ -317,36 +317,36 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Not_Update_Person_If_FirstName_Is_Null()
         {
-            var salah = GetPerson("Mohamed", "Salah");
-            var salahWithNullFirstName = new UpdatePersonDto
+            var existingPerson = GetPersonById(1);
+            var personWithNullFirstName = new UpdatePersonDto
             {
-                PersonId = salah.Id,
-                LastName = salah.LastName,
-                Gender = salah.Gender,
-                BirthDate = salah.BirthDate,
-                BirthPlace = salah.BirthPlace,
-                OtherDetails = salah.OtherDetails
+                PersonId = existingPerson.Id,
+                LastName = existingPerson.LastName,
+                Gender = existingPerson.Gender,
+                BirthDate = existingPerson.BirthDate,
+                BirthPlace = existingPerson.BirthPlace,
+                OtherDetails = existingPerson.OtherDetails
             };
 
-            salahWithNullFirstName.FirstName.ShouldBeNull();
-            Should.Throw<AbpValidationException>(() => _personAppService.Update(salahWithNullFirstName));
+            personWithNullFirstName.FirstName.ShouldBeNull();
+            Should.Throw<AbpValidationException>(() => _personAppService.Update(personWithNullFirstName));
         }
 
         [Fact]
         public void Should_Not_Update_Person_If_FirstName_Length_Is_Oversize()
         {
-            var salah = GetPerson("Mohamed", "Salah");
-            var OversizedFirstName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
+            var existingPerson = GetPersonById(1);
+            var oversizedFirstName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
 
             var salahWithOversizedFirstNameLength = new UpdatePersonDto
             {
-                PersonId = salah.Id,
-                FirstName = OversizedFirstName,
-                LastName = salah.LastName,
-                Gender = salah.Gender,
-                BirthDate = salah.BirthDate,
-                BirthPlace = salah.BirthPlace,
-                OtherDetails = salah.OtherDetails
+                PersonId = existingPerson.Id,
+                FirstName = oversizedFirstName,
+                LastName = existingPerson.LastName,
+                Gender = existingPerson.Gender,
+                BirthDate = existingPerson.BirthDate,
+                BirthPlace = existingPerson.BirthPlace,
+                OtherDetails = existingPerson.OtherDetails
             };
 
             Should.Throw<AbpValidationException>(() => _personAppService.Update(salahWithOversizedFirstNameLength));
@@ -355,55 +355,55 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Not_Update_Person_If_LastName_Is_Null()
         {
-            var salah = GetPerson("Mohamed", "Salah");
+            var existingPerson = GetPersonById(1);
 
-            var salahWithNullLastName = new UpdatePersonDto
+            var personWithNullLastName = new UpdatePersonDto
             {
-                PersonId = salah.Id,
-                FirstName = salah.FirstName,
-                Gender = salah.Gender,
-                BirthDate = salah.BirthDate,
-                BirthPlace = salah.BirthPlace,
-                OtherDetails = salah.OtherDetails
+                PersonId = existingPerson.Id,
+                FirstName = existingPerson.FirstName,
+                Gender = existingPerson.Gender,
+                BirthDate = existingPerson.BirthDate,
+                BirthPlace = existingPerson.BirthPlace,
+                OtherDetails = existingPerson.OtherDetails
             };
 
-            salahWithNullLastName.LastName.ShouldBeNull();
-            Should.Throw<AbpValidationException>(() => _personAppService.Update(salahWithNullLastName));
+            personWithNullLastName.LastName.ShouldBeNull();
+            Should.Throw<AbpValidationException>(() => _personAppService.Update(personWithNullLastName));
         }
 
         [Fact]
         public void Should_Not_Update_Person_If_LastName_Length_Is_Oversize()
         {
-            var salah = GetPerson("Mohamed", "Salah");
-            var OversizedLastName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
+            var existingPerson = GetPersonById(1);
+            var oversizedLastName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
 
-            var salahWithOversizedLastNameLength = new UpdatePersonDto
+            var personWithOversizedLastNameLength = new UpdatePersonDto
             {
-                PersonId = salah.Id,
-                FirstName = salah.FirstName,
-                LastName = OversizedLastName,
-                Gender = salah.Gender,
-                BirthDate = salah.BirthDate,
-                BirthPlace = salah.BirthPlace,
-                OtherDetails = salah.OtherDetails
+                PersonId = existingPerson.Id,
+                FirstName = existingPerson.FirstName,
+                LastName = oversizedLastName,
+                Gender = existingPerson.Gender,
+                BirthDate = existingPerson.BirthDate,
+                BirthPlace = existingPerson.BirthPlace,
+                OtherDetails = existingPerson.OtherDetails
             };
 
-            Should.Throw<AbpValidationException>(() => _personAppService.Update(salahWithOversizedLastNameLength));
+            Should.Throw<AbpValidationException>(() => _personAppService.Update(personWithOversizedLastNameLength));
         }
 
         [Fact]
         public void Should_Not_Update_Person_If_Gender_Value_Is_Invalid()
         {
-            var salah = GetPerson("Mohamed", "Salah");
+            var existingPerson = GetPersonById(1);
 
             var personWithInvalidGenderValue = new UpdatePersonDto
             {
-                PersonId = salah.Id,
-                FirstName = salah.FirstName,
-                LastName = salah.LastName,
-                BirthDate = salah.BirthDate,
-                BirthPlace = salah.BirthPlace,
-                OtherDetails = salah.OtherDetails
+                PersonId = existingPerson.Id,
+                FirstName = existingPerson.FirstName,
+                LastName = existingPerson.LastName,
+                BirthDate = existingPerson.BirthDate,
+                BirthPlace = existingPerson.BirthPlace,
+                OtherDetails = existingPerson.OtherDetails
             };
             Should.Throw<AbpValidationException>(() => _personAppService.Update(personWithInvalidGenderValue));
 
@@ -414,18 +414,18 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Not_Update_Person_If_BirthPlace_Length_Is_Oversize()
         {
-            var salah = GetPerson("Mohamed", "Salah");
-            var OversizedBirthPlace = Strings.GenerateRandomString(Person.MaxBirthPlaceNameLength + 1);
+            var existingPerson = GetPersonById(1);
+            var oversizedBirthPlace = Strings.GenerateRandomString(Person.MaxBirthPlaceNameLength + 1);
 
             var personWithOversizedBirthPlaceLength = new UpdatePersonDto
             {
-                PersonId = salah.Id,
-                FirstName = salah.FirstName,
-                LastName = salah.LastName,
-                Gender = salah.Gender,
-                BirthDate = salah.BirthDate,
-                BirthPlace = OversizedBirthPlace,
-                OtherDetails = salah.OtherDetails
+                PersonId = existingPerson.Id,
+                FirstName = existingPerson.FirstName,
+                LastName = existingPerson.LastName,
+                Gender = existingPerson.Gender,
+                BirthDate = existingPerson.BirthDate,
+                BirthPlace = oversizedBirthPlace,
+                OtherDetails = existingPerson.OtherDetails
             };
 
             Should.Throw<AbpValidationException>(() => _personAppService.Update(personWithOversizedBirthPlaceLength));
@@ -434,18 +434,18 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Not_Update_Person_If_Details_Length_Is_Oversize()
         {
-            var salah = GetPerson("Mohamed", "Salah");
-            var OversizedDetails = Strings.GenerateRandomString(Person.MaxDetailsLength + 1);
+            var existingPerson = GetPersonById(1);
+            var oversizedDetails = Strings.GenerateRandomString(Person.MaxDetailsLength + 1);
 
             var personWithOversizedDetailsLength = new UpdatePersonDto
             {
-                PersonId = salah.Id,
-                FirstName = salah.FirstName,
-                LastName = salah.LastName,
-                Gender = salah.Gender,
-                BirthDate = salah.BirthDate,
-                BirthPlace = salah.BirthPlace,
-                OtherDetails = OversizedDetails
+                PersonId = existingPerson.Id,
+                FirstName = existingPerson.FirstName,
+                LastName = existingPerson.LastName,
+                Gender = existingPerson.Gender,
+                BirthDate = existingPerson.BirthDate,
+                BirthPlace = existingPerson.BirthPlace,
+                OtherDetails = oversizedDetails
             };
 
             Should.Throw<AbpValidationException>(() => _personAppService.Update(personWithOversizedDetailsLength));
@@ -456,20 +456,16 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Soft_Delete_Person()
         {
+            var existingPersonId = 1;
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
-            var salah = GetPerson("Mohamed", "Salah");
 
-            _personAppService.Delete(new DeletePersonInput { PersonId = salah.Id });
+            _personAppService.Delete(new DeletePersonInput { PersonId = existingPersonId });
 
             UsingDbContext(context =>
             {
-                context.People.Count().ShouldBe(initialPeopleCount, "Soft Delete is used, the person should not be really deleted");
-
-                var foundSalah = GetPerson(salah.Id);
-
-                //All filters are Disabled in UsingDbContext methode
-                foundSalah.ShouldNotBeNull();
-                foundSalah.IsDeleted.ShouldBeTrue();
+                //Filters are disabled inside UsingDbContext methods
+                context.People.Count().ShouldBe(initialPeopleCount, "Soft delete is enabled, person should not be really deleted");
+                context.People.First(p => p.Id == existingPersonId).IsDeleted.ShouldBeTrue();
             });
         }
 
@@ -479,8 +475,10 @@ namespace Foyer.Tests.People
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
             var notExistingPersonId = GenerateNotExistingPersonId();
 
-            Should.Throw<UserFriendlyException>(() => _personAppService.Delete(new DeletePersonInput { PersonId = notExistingPersonId }))
-                .Message.ShouldBe("This Person does not exist");
+            Should.Throw<UserFriendlyException>(() =>
+            {
+                _personAppService.Delete(new DeletePersonInput { PersonId = notExistingPersonId });
+            }).Message.ShouldBe("This Person does not exist");
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
         }
@@ -489,13 +487,12 @@ namespace Foyer.Tests.People
         public void Should_Not_Delete_Person_If_Person_Is_Already_Soft_Deleted()
         {
             var initialPeopleCount = UsingDbContext(context => context.People.Count());
-            var softDeletedPerson = UsingDbContext(context => context.People.FirstOrDefault(p => p.IsDeleted == true));
+            var softDeletedPerson = UsingDbContext(context => context.People.First(p => p.IsDeleted));
 
-            softDeletedPerson.ShouldNotBeNull();
-            softDeletedPerson.IsDeleted.ShouldBeTrue();
-
-            Should.Throw<UserFriendlyException>(() => _personAppService.Delete(new DeletePersonInput { PersonId = softDeletedPerson.Id }))
-                .Message.ShouldBe("This Person does not exist");
+            Should.Throw<UserFriendlyException>(() =>
+            {
+                _personAppService.Delete(new DeletePersonInput { PersonId = softDeletedPerson.Id });
+            }).Message.ShouldBe("This Person does not exist");
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
         }
@@ -503,13 +500,10 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Not_Delete_Person_If_Person_Id_Is_Out_Of_Range()
         {
-            var input = new DeletePersonInput
+            Should.Throw<AbpValidationException>(() => 
             {
-                //PersonId = 0 by default
-            };
-
-            input.PersonId.ShouldNotBeInRange(1, int.MaxValue);
-            Should.Throw<AbpValidationException>(() => _personAppService.Delete(input), "PersonId = 0 should be out of range");
+                _personAppService.Delete(new DeletePersonInput { PersonId = 0 });
+            }, "PersonId = 0 should be out of range");
         }
         #endregion
 
@@ -517,19 +511,21 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Return_Found_PersonDto()
         {
-            var salah = GetPerson("Mohamed", "Salah");
+            var existingPersonId = 1;
 
-            var personDto = _personAppService.Get(new GetPersonInput { PersonId = salah.Id });
+            var output = Should.NotThrow(() =>
+            {
+                return _personAppService.Get(new GetPersonInput { PersonId = existingPersonId });
+            });
 
-            personDto.ShouldBeOfType<PersonDto>();
-            personDto.ShouldNotBeNull();
-            personDto.Id.ShouldBe(salah.Id);
+            output.ShouldBeOfType<PersonDto>();
+            output.Id.ShouldBe(existingPersonId);
         }
 
         [Fact]
         public void Should_Throw_EntityNotFoundException_If_GetPersonInput_Id_Does_Not_Exist()
         {
-            //Generate methode make some assertions to test if generated Id does not exist.
+            //Generate method make some assertions to test if generated Id does not exist.
             var notExistingPersonId = GenerateNotExistingPersonId();
 
             Should.Throw<EntityNotFoundException>(() => _personAppService.Get(new GetPersonInput { PersonId = notExistingPersonId }));
@@ -538,13 +534,10 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Throw_AbpValidationException_If_GetPersonInput_Id_Is_Out_Of_Range()
         {
-            var input = new GetPersonInput
+            Should.Throw<AbpValidationException>(() =>
             {
-                //PersonId = 0 by default
-            };
-
-            input.PersonId.ShouldNotBeInRange(1, int.MaxValue);
-            Should.Throw<AbpValidationException>(() => _personAppService.Get(input), "PersonId = 0 should be out of range");
+                _personAppService.Get(new GetPersonInput { PersonId = 0 });
+            }, "PersonId = 0 should be out of range");
         }
         #endregion
 

@@ -123,7 +123,7 @@ namespace Foyer.Tests.Families
                 MotherId = GenerateNotExistingPersonId()
             };
 
-            WithUnitOfWork(() => _familyManager.ParentsFamilyExists(family).ShouldBeTrue());
+            WithUnitOfWork(() => _familyManager.ParentsFamilyExists(family).ShouldBeFalse());
         }
         #endregion
     }
