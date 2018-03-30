@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.ObjectMapping;
@@ -9,10 +7,11 @@ using Abp.UI;
 using Foyer.Families.Dto;
 using Foyer.FamilyRelationships;
 using Foyer.People;
+using Abp.Application.Services;
 
 namespace Foyer.Families
 {
-    public class FamilyAppService : IFamilyAppService
+    public class FamilyAppService : FoyerAppServiceBase, IFamilyAppService
     {
         private readonly IRepository<Person> _personRepository;
         private readonly IRepository<Family> _familyRepository;
@@ -43,7 +42,7 @@ namespace Foyer.Families
 
             if (_familyManager.ParentsFamilyExists(family))
             {
-                throw new UserFriendlyException("This family already exist");
+                throw new UserFriendlyException(L("FamilyAlreadyExists"));
             }
 
             GetAndAssignFamilyParents(family);

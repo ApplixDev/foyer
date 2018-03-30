@@ -16,11 +16,11 @@ using Foyer.MultiTenancy;
 using Castle.MicroKernel.Registration;
 using Effort;
 using EntityFramework.DynamicFilters;
-using Foyer.Tests.TestData;
 using Foyer.People;
 using Foyer.Families;
 using Shouldly;
 using Foyer.Tests.Utilities;
+using Abp.Localization;
 
 namespace Foyer.Tests
 {
@@ -311,7 +311,7 @@ namespace Foyer.Tests
         }
 
         /// <summary>
-        /// Uses OtherDetails property of person to check if he is single or not.
+        /// Check if person OtherDetails == MaritalStatus.Unmarried to find single man.
         /// </summary>
         /// <returns></returns>
         protected Person GetUnmarriedMan()
@@ -321,7 +321,7 @@ namespace Foyer.Tests
         }
 
         /// <summary>
-        /// Uses OtherDetails property of person to check if she is single or not.
+        /// Check if person OtherDetails == MaritalStatus.Unmarried to find single woman.
         /// </summary>
         /// <returns></returns>
         protected Person GetUnmarriedWomen()

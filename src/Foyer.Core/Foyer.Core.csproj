@@ -208,6 +208,7 @@
     <Compile Include="Configuration\AppSettingProvider.cs" />
     <Compile Include="Editions\EditionManager.cs" />
     <Compile Include="Features\FeatureValueStore.cs" />
+    <Compile Include="FoyerDomainServiceBase.cs" />
     <Compile Include="MultiTenancy\Tenant.cs" />
     <Compile Include="MultiTenancy\TenantManager.cs" />
     <Compile Include="People\Gender.cs" />
@@ -232,7 +233,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Localization\Source\Foyer-zh-CN.xml" />
     <EmbeddedResource Include="Localization\Source\Foyer-tr.xml" />
-    <EmbeddedResource Include="Localization\Source\Foyer.xml" />
+    <EmbeddedResource Include="Localization\Source\Foyer.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Localization\Source\Foyer-lt.xml" />
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,6 @@ using Abp.IdentityFramework;
 using Abp.Runtime.Session;
 using Foyer.Authorization.Users;
 using Foyer.MultiTenancy;
-using Foyer.Users;
 using Microsoft.AspNet.Identity;
 
 namespace Foyer

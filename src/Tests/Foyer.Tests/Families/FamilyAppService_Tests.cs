@@ -45,24 +45,57 @@ namespace Foyer.Tests.Families
             var singleManId = GetUnmarriedMan().Id;
             var singleWomenId = GetUnmarriedWomen().Id;
 
+            //Add family too make it exists
             UsingDbContext(Context =>
             {
-                Context.Families.Add(new Family { FatherId = singleManId });
-                Context.Families.Add(new Family { MotherId = singleWomenId });
                 Context.Families.Add(new Family { FatherId = singleManId, MotherId = singleWomenId });
             });
 
-            var familyInputWithOnlyFather = new CreateFamilyDto { FatherId = singleManId };
-            var familyInputWithOnlyMother = new CreateFamilyDto { FatherId = singleWomenId };
             var familyInputWithBothParents = new CreateFamilyDto { FatherId = singleManId, MotherId = singleWomenId };
 
             Should.Throw<UserFriendlyException>(() =>
             {
-                _familyAppService.Create(familyInputWithOnlyFather);
-                _familyAppService.Create(familyInputWithOnlyMother);
                 _familyAppService.Create(familyInputWithBothParents);
             })
-            .Message.ShouldBe("This family already exist");
+            .Message.ShouldBe("This family already exists");
+        }
+
+        [Fact]
+        public void Should_Throw_UserFriendlyException_If_Single_Mother_Family_Already_Exists()
+        {
+            var singleWomenId = GetUnmarriedWomen().Id;
+
+            UsingDbContext(Context =>
+            {
+                Context.Families.Add(new Family { MotherId = singleWomenId });
+            });
+
+            var familyInputWithOnlyMother = new CreateFamilyDto { MotherId = singleWomenId };
+
+            Should.Throw<UserFriendlyException>(() =>
+            {
+                _familyAppService.Create(familyInputWithOnlyMother);
+            })
+            .Message.ShouldBe("This family already exists");
+        }
+
+        [Fact]
+        public void Should_Throw_UserFriendlyException_If_Single_Father_Family_Already_Exists()
+        {
+            var singleManId = GetUnmarriedMan().Id;
+
+            UsingDbContext(Context =>
+            {
+                Context.Families.Add(new Family { FatherId = singleManId });
+            });
+
+            var familyInputWithOnlyFather = new CreateFamilyDto { FatherId = singleManId };
+
+            Should.Throw<UserFriendlyException>(() =>
+            {
+                _familyAppService.Create(familyInputWithOnlyFather);
+            })
+            .Message.ShouldBe("This family already exists");
         }
 
         [Fact]
@@ -162,7 +195,11 @@ namespace Foyer.Tests.Families
 
         #endregion
 
-        #region AssignPersonHeadOfFamily tests
+        #region Update
+
+        #endregion
+
+        #region AssignPersonHeadOfFamily
         [Fact]
         public void Should_Assign_Person_As_Family_Father()
         {

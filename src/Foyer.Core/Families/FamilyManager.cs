@@ -1,12 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Abp.Domain.Repositories;
 using Abp.Domain.Services;
+using Abp.Localization;
 using Abp.UI;
 using Foyer.People;
 
 namespace Foyer.Families
 {
-    public class FamilyManager : DomainService, IFamilyManager
+    public class FamilyManager : FoyerDomainServiceBase, IFamilyManager
     {
         private readonly IRepository<Family> _familyRepository;
 
@@ -25,32 +27,30 @@ namespace Foyer.Families
         {
             if (father.Gender != Gender.Male)
             {
-                throw new UserFriendlyException("The family father must be a male");
+                throw new UserFriendlyException(L("FamilyFatherMustBeMale"));
             }
-
-            if (family.FatherId == father.Id)//if (family.Father == father) //To search and test
+            
+            if (father.IsTransient())
             {
-                return;
+                throw new ApplicationException("Assign transient person as family parent is not allowed, person id is required");
             }
 
             family.FatherId = father.Id;
-            //family.Father = father;
         }
 
         public void AssignFamilyMother(Family family, Person mother)
         {
             if (mother.Gender != Gender.Female)
             {
-                throw new UserFriendlyException("The family mother must be a female");
+                throw new UserFriendlyException(L("FamilyMotherMustBeFemale"));
             }
 
-            if (family.MotherId == mother.Id)//if (family.Mother == mother) //To search and test
+            if (mother.IsTransient())
             {
-                return;
+                throw new ApplicationException("Assign transient person as family parent is not allowed, person id is required");
             }
-
+                
             family.MotherId = mother.Id;
-            //family.Mother = mother;
         }
 
         public bool ParentsFamilyExists(Family family)

@@ -77,6 +77,9 @@
     <text name="Edit">Edit</text>
     <text name="Delete">Delete</text>
 
+    <text name="FamilyAlreadyExists">This family already exists</text>
+    <text name="FamilyFatherMustBeMale">The family father must be a male</text>
+    <text name="FamilyMotherMustBeFemale">The family mother must be a female</text>
 
   </texts>
 </localizationDictionary>
