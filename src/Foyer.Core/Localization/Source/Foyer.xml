@@ -78,8 +78,11 @@
     <text name="Delete">Delete</text>
 
     <text name="FamilyAlreadyExists">This family already exists</text>
+    <text name="FamilyDoesNotExists">This family does not exists</text>
     <text name="FamilyFatherMustBeMale">The family father must be a male</text>
     <text name="FamilyMotherMustBeFemale">The family mother must be a female</text>
+    <text name="PersonAlreadyExists">This person already exists</text>
+    <text name="PersonDoesNotExists">This person does not exists</text>
 
   </texts>
 </localizationDictionary>

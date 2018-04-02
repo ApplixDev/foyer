@@ -310,6 +310,11 @@ namespace Foyer.Tests
             return UsingDbContext(context => context.People.First(p => p.Id == personId));
         }
 
+        protected int GetPeopleCount()
+        {
+            return UsingDbContext(context => context.People.Count());
+        }
+
         /// <summary>
         /// Check if person OtherDetails == MaritalStatus.Unmarried to find single man.
         /// </summary>
@@ -346,6 +351,11 @@ namespace Foyer.Tests
                 (f.Father.FirstName == parentFirstName && f.Father.LastName == parentLastName) ||
                 (f.Mother.FirstName == parentFirstName && f.Mother.LastName == parentLastName)
             ));
+        }
+
+        protected int GetFamiliesCount()
+        {
+            return UsingDbContext(context => context.Families.Count());
         }
 
         protected int GenerateNotExistingPersonId()

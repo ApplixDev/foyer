@@ -6,6 +6,7 @@ using Foyer.Families.Dto;
 using Foyer.People;
 using Shouldly;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Foyer.Tests.Families
@@ -151,6 +152,8 @@ namespace Foyer.Tests.Families
         [Fact]
         public void Should_Create_New_Family()
         {
+            var initialFamiliesCount = GetFamiliesCount();
+
             var newHusband = GetUnmarriedMan();
             var newWife = GetUnmarriedWomen();
 
@@ -162,6 +165,7 @@ namespace Foyer.Tests.Families
 
             UsingDbContext(context =>
             {
+                context.Families.Count().ShouldBe(initialFamiliesCount + 1);
                 context.Families.FirstOrDefault(f => f.FatherId == newHusband.Id && f.MotherId == newWife.Id)
                 .ShouldNotBeNull();
             });
@@ -170,12 +174,14 @@ namespace Foyer.Tests.Families
         [Fact]
         public void Should_Create_Single_Parent_Family_With_Father()
         {
+            var initialFamiliesCount = GetFamiliesCount();
             var singleMan = GetUnmarriedMan();
 
             _familyAppService.Create(new CreateFamilyDto { FatherId = singleMan.Id });
 
             UsingDbContext(context =>
             {
+                context.Families.Count().ShouldBe(initialFamiliesCount + 1);   
                 context.Families.FirstOrDefault(f => f.FatherId == singleMan.Id && f.MotherId == null).ShouldNotBeNull();
             });
         }
@@ -183,12 +189,14 @@ namespace Foyer.Tests.Families
         [Fact]
         public void Should_Create_Single_Parent_Family_With_Mother()
         {
+            var initialFamiliesCount = GetFamiliesCount();
             var singleWoman = GetUnmarriedWomen();
 
             _familyAppService.Create(new CreateFamilyDto { MotherId = singleWoman.Id });
 
             UsingDbContext(context =>
             {
+                context.Families.Count().ShouldBe(initialFamiliesCount + 1);
                 context.Families.FirstOrDefault(f => f.MotherId == singleWoman.Id && f.FatherId == null).ShouldNotBeNull();
             });
         }
@@ -196,10 +204,113 @@ namespace Foyer.Tests.Families
         #endregion
 
         #region Update
+        [Fact]
+        public void Should_Update_Family()
+        {
+            var existingFamilyId = GetFamilyFromParentId(1).Id;
 
+            var updateFamilyDto = new UpdateFamilyDto
+            {
+                FamilyId = existingFamilyId,
+                FatherId = 3,
+                MotherId = 4,
+                OtherDetails = "et ils eurent beaucoup d'enfants"
+            };
+
+            _familyAppService.Update(updateFamilyDto);
+
+            UsingDbContext(context =>
+            {
+                var family = context.Families.FirstOrDefault(f => f.Id == existingFamilyId);
+                family.ShouldNotBeNull();
+                family.FatherId.ShouldBe(updateFamilyDto.FatherId);
+                family.MotherId.ShouldBe(updateFamilyDto.MotherId);
+                family.OtherDetails.ShouldBe(updateFamilyDto.OtherDetails);
+            });
+        }
+
+        [Fact]
+        public void Should_Throw_EntityNotFoundException_If_Family_Does_Not_Exists()
+        {
+            var notExistingFamilyId = GenerateNotExistingFamilyId();
+
+            var notExistingFamily = new UpdateFamilyDto
+            {
+                FamilyId = notExistingFamilyId,
+                FatherId = 1,
+                MotherId = 2
+            };
+
+            Should.Throw<EntityNotFoundException>(() => _familyAppService.Update(notExistingFamily));
+        }
         #endregion
 
-        #region AssignPersonHeadOfFamily
+        #region Delete
+        [Fact]
+        public void Should_Soft_Delete_Family()
+        {
+            var existingFamilyId = 1;
+            var initialFamiliesCount = GetFamiliesCount();
+
+            _familyAppService.Delete(new DeleteFamilyInput { FamilyId = existingFamilyId });
+
+            UsingDbContext(context =>
+            {
+                context.Families.Count().ShouldBe(initialFamiliesCount);
+                context.Families.First(p => p.Id == existingFamilyId).IsDeleted.ShouldBeTrue();
+            });
+        }
+
+        [Fact]
+        public void Should_Not_Delete_Family_If_Family_Does_Not_Exist()
+        {
+            var initialFamiliesCount = GetFamiliesCount();
+            var notExistingFamilyId = GenerateNotExistingFamilyId();
+
+            Should.Throw<UserFriendlyException>(() =>
+            {
+                _familyAppService.Delete(new DeleteFamilyInput { FamilyId = notExistingFamilyId });
+            }).Message.ShouldBe("This family does not exists");
+
+            GetFamiliesCount().ShouldBe(initialFamiliesCount);
+        }
+        #endregion
+
+        #region Get
+        [Fact]
+        public void Should_Throw_EntityNotFoundException_If_Input_Family_Does_Not_Exist()
+        {
+            var notExistingFamilyId = GenerateNotExistingFamilyId();
+
+            Should.Throw<EntityNotFoundException>(() => _familyAppService.Get(new GetFamilyInput
+            {
+                FamilyId = notExistingFamilyId
+            }));
+        }
+
+        [Fact]
+        public void Should_Return_Found_FamilyDto()
+        {
+            var existingFamilyId = GetFamilyFromParentId(1).Id;
+
+            var output = _familyAppService.Get(new GetFamilyInput { FamilyId = existingFamilyId });
+
+            output.ShouldBeOfType<FamilyDto>();
+            output.Id.ShouldBe(existingFamilyId);
+        }
+        #endregion
+
+        #region Get all families
+        [Fact]
+        public async Task GetAllFamilies_Test()
+        {
+            var output = await _familyAppService.GetAllFamilies();
+
+            output.Families.Count().ShouldBeGreaterThan(0);
+        }
+        #endregion
+
+        #region Assign family parents
         [Fact]
         public void Should_Assign_Person_As_Family_Father()
         {

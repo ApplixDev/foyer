@@ -8,6 +8,7 @@ using Foyer.Families.Dto;
 using Foyer.FamilyRelationships;
 using Foyer.People;
 using Abp.Application.Services;
+using System.Collections.Generic;
 
 namespace Foyer.Families
 {
@@ -67,22 +68,36 @@ namespace Foyer.Families
 
         public void Update(UpdateFamilyDto input)
         {
-            throw new NotImplementedException();
+            var family = _familyRepository.Get(input.FamilyId);
+            MapToEntity(input, family);
         }
 
         public void Delete(DeleteFamilyInput input)
         {
-            throw new NotImplementedException();
+            var family = _familyRepository.FirstOrDefault(p => p.Id == input.FamilyId);
+
+            if (family == null)
+            {
+                throw new UserFriendlyException(L("FamilyDoesNotExists"));
+            }
+
+            _familyRepository.Delete(input.FamilyId);
         }
 
         public FamilyDto Get(GetFamilyInput input)
         {
-            throw new NotImplementedException();
+            var family = _familyRepository.Get(input.FamilyId);
+            return _objectMapper.Map<FamilyDto>(family);
         }
 
-        public Task<GetAllFamiliesOutput> GetAllFamilies()
+        public async Task<GetAllFamiliesOutput> GetAllFamilies()
         {
-            throw new NotImplementedException();
+            var families = await _familyRepository.GetAllListAsync();
+
+            return new GetAllFamiliesOutput
+            {
+                Families =  _objectMapper.Map<List<FamilyDto>>(families)
+            };
         }
 
         public void AssignFamilyParents(AssignFamilyParentsInput input)

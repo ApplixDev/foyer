@@ -28,7 +28,7 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Create_New_Person()
         {
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
 
             var loCelso = new CreatePersonDto
             {
@@ -98,7 +98,7 @@ namespace Foyer.Tests.People
                 BirthDate = new DateTime(1992, 6, 15)
             };
             Should.Throw<UserFriendlyException>(() => _personAppService.Create(salah))
-                .Message.ShouldBe("This Person already exist");
+                .Message.ShouldBe("This Person already exists");
 
             UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
         }
@@ -124,7 +124,7 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Not_Create_New_Person_If_FirstName_Length_Is_Oversize()
         {
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
 
             var oversizedFirstName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
 
@@ -137,15 +137,16 @@ namespace Foyer.Tests.People
                 BirthPlace = "USA",
                 OtherDetails = "We don't know the first name of this person"
             };
+
             Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithOversizedFirstNameLength));
 
-            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+            GetPeopleCount().ShouldBe(initialPeopleCount);
         }
 
         [Fact]
         public void Should_Not_Create_New_Person_If_LastName_Is_Null()
         {
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
 
             var personWithNullLastName = new CreatePersonDto
             {
@@ -155,15 +156,16 @@ namespace Foyer.Tests.People
                 BirthPlace = "USA",
                 OtherDetails = "We don't know the last name of this person"
             };
+
             Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithNullLastName));
 
-            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+            GetPeopleCount().ShouldBe(initialPeopleCount);
         }
 
         [Fact]
         public void Should_Not_Create_New_Person_If_LastName_Length_Is_Oversize()
         {
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
 
             var oversizedLastName = Strings.GenerateRandomString(AbpUserBase.MaxNameLength + 1);
 
@@ -178,13 +180,13 @@ namespace Foyer.Tests.People
             };
             Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithOversizedLastNameLength));
 
-            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+            GetPeopleCount().ShouldBe(initialPeopleCount);
         }
 
         [Fact]
         public void Should_Not_Create_New_Person_If_Gender_Value_Is_Invalid()
         {
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
 
             var personWithInvalidGenderValue = new CreatePersonDto
             {
@@ -199,13 +201,13 @@ namespace Foyer.Tests.People
             personWithInvalidGenderValue.Gender = (Gender)3; //Value can only be Female = 1 or Male = 2.
             Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithInvalidGenderValue));
 
-            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+            GetPeopleCount().ShouldBe(initialPeopleCount);
         }
 
         [Fact]
         public void Should_Not_Create_New_Person_If_Details_Length_Is_Oversize()
         {
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
 
             var oversizedDetails = Strings.GenerateRandomString(Person.MaxDetailsLength + 1);
 
@@ -220,13 +222,13 @@ namespace Foyer.Tests.People
             };
             Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithOversizedDetailsLength));
 
-            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+            GetPeopleCount().ShouldBe(initialPeopleCount);
         }
 
         [Fact]
         public void Should_Not_Create_New_Person_If_BirthPlace_Length_Is_Oversize()
         {
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
 
             var oversizedBirthPlace = Strings.GenerateRandomString(Person.MaxBirthPlaceNameLength + 1);
 
@@ -240,7 +242,7 @@ namespace Foyer.Tests.People
             };
             Should.Throw<AbpValidationException>(() => _personAppService.Create(personWithOversizedBirthPlaceLength));
 
-            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+            GetPeopleCount().ShouldBe(initialPeopleCount);
         }
         #endregion
 
@@ -277,8 +279,7 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Not_Update_Or_Add_Person_If_Person_Id_Does_Not_Exist()
         {
-            //Arrange
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
             var notExistingPersonId = GenerateNotExistingPersonId();
 
             //All input fields are valid but this person do not exist.
@@ -294,7 +295,7 @@ namespace Foyer.Tests.People
 
             Should.Throw<EntityNotFoundException>(() => _personAppService.Update(notExistingPerson));
 
-            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+            GetPeopleCount().ShouldBe(initialPeopleCount);
         }
 
         [Fact]
@@ -457,7 +458,7 @@ namespace Foyer.Tests.People
         public void Should_Soft_Delete_Person()
         {
             var existingPersonId = 1;
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
 
             _personAppService.Delete(new DeletePersonInput { PersonId = existingPersonId });
 
@@ -472,29 +473,29 @@ namespace Foyer.Tests.People
         [Fact]
         public void Should_Not_Delete_Person_If_Person_Id_Does_Not_Exist()
         {
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
             var notExistingPersonId = GenerateNotExistingPersonId();
 
             Should.Throw<UserFriendlyException>(() =>
             {
                 _personAppService.Delete(new DeletePersonInput { PersonId = notExistingPersonId });
-            }).Message.ShouldBe("This Person does not exist");
+            }).Message.ShouldBe("This person does not exists");
 
-            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+            GetPeopleCount().ShouldBe(initialPeopleCount);
         }
 
         [Fact]
         public void Should_Not_Delete_Person_If_Person_Is_Already_Soft_Deleted()
         {
-            var initialPeopleCount = UsingDbContext(context => context.People.Count());
+            var initialPeopleCount = GetPeopleCount();
             var softDeletedPerson = UsingDbContext(context => context.People.First(p => p.IsDeleted));
 
             Should.Throw<UserFriendlyException>(() =>
             {
                 _personAppService.Delete(new DeletePersonInput { PersonId = softDeletedPerson.Id });
-            }).Message.ShouldBe("This Person does not exist");
+            }).Message.ShouldBe("This person does not exists");
 
-            UsingDbContext(context => context.People.Count().ShouldBe(initialPeopleCount));
+            GetPeopleCount().ShouldBe(initialPeopleCount);
         }
 
         [Fact]

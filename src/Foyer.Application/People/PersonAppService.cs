@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Foyer.People
 {
-    public class PersonAppService : IPersonAppService
+    public class PersonAppService : FoyerAppServiceBase, IPersonAppService
     {
         private IRepository<Person> _personRepository;
         private IPersonManager _personManager;
@@ -27,10 +27,7 @@ namespace Foyer.People
         {
             var person = MapToEntity(input);
 
-            if (_personManager.PersonExists(person))
-            {
-                throw new UserFriendlyException("This Person already exist");
-            }
+            ThrowExceptionIfPersonExists(person);
 
             _personRepository.Insert(person);
         }
@@ -39,12 +36,17 @@ namespace Foyer.People
         {
             var person = MapToEntity(input);
 
-            if (_personManager.PersonExists(person))
-            {
-                throw new UserFriendlyException("This Person already exist");
-            }
+            ThrowExceptionIfPersonExists(person);
 
             await _personRepository.InsertAsync(person);
+        }
+
+        private void ThrowExceptionIfPersonExists(Person person)
+        {
+            if (_personManager.PersonExists(person))
+            {
+                throw new UserFriendlyException(L("PersonAlreadyExists"));
+            }
         }
 
         public void Update(UpdatePersonDto input)
@@ -59,7 +61,7 @@ namespace Foyer.People
 
             if (person == null)
             {
-                throw new UserFriendlyException("This Person does not exist");
+                throw new UserFriendlyException(L("PersonDoesNotExists"));
             }
 
             _personRepository.Delete(input.PersonId);
