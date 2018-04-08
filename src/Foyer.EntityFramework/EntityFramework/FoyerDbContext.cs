@@ -32,9 +32,9 @@ namespace Foyer.EntityFramework
         public FoyerDbContext(string nameOrConnectionString)
             : base(nameOrConnectionString)
         {
-#if DEBUG
-            Database.Log = message => FileLogger.Log(message);
-#endif
+//#if DEBUG
+//            Database.Log = message => FileLogger.Log(message);
+//#endif
         }
 
         //This constructor is used in tests
