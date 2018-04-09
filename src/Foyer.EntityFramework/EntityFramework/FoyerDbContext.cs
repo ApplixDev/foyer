@@ -8,6 +8,7 @@ using Foyer.People;
 using Foyer.FamilyRelationships;
 using Foyer.MultiTenancy;
 using System.IO;
+using System;
 
 namespace Foyer.EntityFramework
 {
@@ -22,7 +23,7 @@ namespace Foyer.EntityFramework
         public FoyerDbContext()
             : base("Default")
         {
-            
+
         }
 
         /* NOTE:
@@ -32,16 +33,16 @@ namespace Foyer.EntityFramework
         public FoyerDbContext(string nameOrConnectionString)
             : base(nameOrConnectionString)
         {
-//#if DEBUG
-//            Database.Log = message => FileLogger.Log(message);
-//#endif
+            //#if DEBUG
+            //            Database.Log = message => FileLogger.Log(message);
+            //#endif
         }
 
         //This constructor is used in tests
         public FoyerDbContext(DbConnection existingConnection)
          : base(existingConnection, false)
         {
-            
+
         }
 
         public FoyerDbContext(DbConnection existingConnection, bool contextOwnsConnection)
@@ -66,7 +67,8 @@ namespace Foyer.EntityFramework
         {
             public static void Log(string message)
             {
-                File.AppendAllText(@"C:\Users\lya-z\Desktop\SqlLog.txt", message);
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\SqlLog.txt";
+                File.AppendAllText(path, message);
             }
         }
     }

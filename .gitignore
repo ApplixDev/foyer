@@ -196,8 +196,10 @@ FakesAssemblies/
 *.opt
 
 # Custom
+/src/Foyer.WebMpa/Logs
 /src/Foyer.Web/Logs
 /src/Foyer.WebSpaAngular/Logs
 /src/Foyer.WebSpaDurandal/Logs
 /src/Foyer.WebSpaAngular/App_Data/Logs/Logs.txt
 /src/Foyer.Web/App_Data/Logs/Logs.txt
+/src/Foyer.WebMpa/App_Data/Logs/Logs.txt

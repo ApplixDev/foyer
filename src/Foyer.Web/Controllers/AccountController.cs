@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using Abp.Auditing;
 using Abp.Authorization;
@@ -18,7 +20,6 @@ using Abp.Runtime.Session;
 using Abp.Threading;
 using Abp.UI;
 using Abp.Web.Models;
-using Abp.Web.Security.AntiForgery;
 using Foyer.Authorization;
 using Foyer.Authorization.Roles;
 using Foyer.Authorization.Users;
@@ -44,7 +45,14 @@ namespace Foyer.Web.Controllers
         private readonly ISessionAppService _sessionAppService;
         private readonly ILanguageManager _languageManager;
         private readonly ITenantCache _tenantCache;
-        private readonly IAuthenticationManager _authenticationManager;
+
+        private IAuthenticationManager AuthenticationManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
+            }
+        }
 
         public AccountController(
             TenantManager tenantManager,
@@ -54,9 +62,8 @@ namespace Foyer.Web.Controllers
             IMultiTenancyConfig multiTenancyConfig,
             LogInManager logInManager,
             ISessionAppService sessionAppService,
-            ILanguageManager languageManager, 
-            ITenantCache tenantCache, 
-            IAuthenticationManager authenticationManager)
+            ILanguageManager languageManager,
+            ITenantCache tenantCache)
         {
             _tenantManager = tenantManager;
             _userManager = userManager;
@@ -67,7 +74,6 @@ namespace Foyer.Web.Controllers
             _sessionAppService = sessionAppService;
             _languageManager = languageManager;
             _tenantCache = tenantCache;
-            _authenticationManager = authenticationManager;
         }
 
         #region Login / Logout
@@ -101,7 +107,7 @@ namespace Foyer.Web.Controllers
                 loginModel.UsernameOrEmailAddress,
                 loginModel.Password,
                 GetTenancyNameOrNull()
-                );
+            );
 
             await SignInAsync(loginResult.User, loginResult.Identity, loginModel.RememberMe);
 
@@ -138,19 +144,30 @@ namespace Foyer.Web.Controllers
                 identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
             }
 
-            _authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            // Many browsers do not clean up session cookies when you close them. So the rule of thumb must be:
-            // For having a consistent behaviour across all browsers, don't rely solely on browser behaviour for proper clean-up
-            // of session cookies. It is safer to use non-session cookies (IsPersistent == true) in bundle with an expiration date.
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+
+            // Gp - fix code for NOT using session cookies
+            // Don’t rely solely on browser behaviour for proper clean-up of session cookies during a given browsing session. 
+            // It’s safer to use non-session cookies (IsPersistent == true) with an expiration date for having a 
+            // consistent behaviour across all browsers and versions.
             // See http://blog.petersondave.com/cookies/Session-Cookies-in-Chrome-Firefox-and-Sitecore/
-            if (rememberMe) {
-                _authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, identity);
-            } else {
-                _authenticationManager.SignIn(
+
+            // Gp Commented out: AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = rememberMe }, identity);
+            if (rememberMe)
+            {
+                //var rememberBrowserIdentity = AuthenticationManager.CreateTwoFactorRememberBrowserIdentity(user.Id.ToString());
+                AuthenticationManager.SignIn(
+                    new AuthenticationProperties { IsPersistent = true },
+                    identity /*, rememberBrowserIdentity*/);
+            }
+            else
+            {
+                AuthenticationManager.SignIn(
                     new AuthenticationProperties
                     {
                         IsPersistent = true,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(int.Parse(System.Configuration.ConfigurationManager.AppSettings["AuthSession.ExpireTimeInMinutes.WhenNotPersistent"] ?? "30"))
+                        ExpiresUtc =
+                            DateTimeOffset.UtcNow.AddMinutes(int.Parse(ConfigurationManager.AppSettings["AuthSession.ExpireTimeInMinutes.WhenNotPersistet"] ?? "30"))
                     },
                     identity);
             }
@@ -183,7 +200,7 @@ namespace Foyer.Web.Controllers
 
         public ActionResult Logout()
         {
-            _authenticationManager.SignOut();
+            AuthenticationManager.SignOut();
             return RedirectToAction("Login");
         }
 
@@ -233,7 +250,7 @@ namespace Foyer.Web.Controllers
                 ExternalLoginInfo externalLoginInfo = null;
                 if (model.IsExternalLogin)
                 {
-                    externalLoginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
+                    externalLoginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
                     if (externalLoginInfo == null)
                     {
                         throw new ApplicationException("Can not external login!");
@@ -343,17 +360,14 @@ namespace Foyer.Web.Controllers
                     "Account",
                     new
                     {
-                        ReturnUrl = returnUrl,
-                        tenancyName = GetTenancyNameOrNull()
+                        ReturnUrl = returnUrl
                     })
             );
         }
 
-        [UnitOfWork]
-        [DisableAbpAntiForgeryTokenValidation]
         public virtual async Task<ActionResult> ExternalLoginCallback(string returnUrl, string tenancyName = "")
         {
-            var loginInfo = await _authenticationManager.GetExternalLoginInfoAsync();
+            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
             {
                 return RedirectToAction("Login");
@@ -384,7 +398,7 @@ namespace Foyer.Web.Controllers
             switch (loginResult.Result)
             {
                 case AbpLoginResultType.Success:
-                    await SignInAsync(loginResult.User, loginResult.Identity, false);
+                    await SignInAsync(loginResult.User, loginResult.Identity);
 
                     if (string.IsNullOrWhiteSpace(returnUrl))
                     {

@@ -1,4 +1,4 @@
-﻿using Abp.AutoMapper;
+using Abp.AutoMapper;
 using Foyer.Sessions.Dto;
 
 namespace Foyer.Web.Models.Account
